@@ -1,0 +1,251 @@
+
+USE CASE: MLFLOW ON REMOTE SERVER
+Guidelines :
+
+Experiment, prompt, model name should not be same for any two users.
+You cannot use experiments, prompts, models registered by other users.
+use project specific names for experiments, prompts as well as the models.
+create a directory /home/nifi/mlflow/artifacts and use sudo chmod -R 777 mlflow/     command before using mlflow.
+For Mac: mkdir -p ~/mlflow/artifacts and then chmod -R 777 ~/mlflow command before using the mlflow.
+tracking uri - https://mlflow.shorthills.ai/
+
+Sample UseCase :
+ 
+import mlflow
+import mlflow.exceptions
+import pandas as pd
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
+import mlflow.pyfunc
+from mlflow.models.signature import ModelSignature
+from mlflow.types import DataType, Schema, ColSpec
+
+from mlflow.entities import Feedback
+from mlflow.genai import scorer
+from mlflow.genai.scorers import Guidelines
+
+# Set the tracking URI to the server URL
+
+mlflow.set_tracking_uri("https://mlflow.shorthills.ai")  # Your server URL
+os.environ["MLFLOW_TRACKING_USERNAME"] = "YOUR_USER_NAME"
+os.environ["MLFLOW_TRACKING_PASSWORD"] = "YOUR_PASSWORD"
+
+
+load_dotenv()
+
+# Verify that the OpenAI API key was loaded successfully
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY not found. Please add it to your .env file.")
+
+# Set the experiment name to keep our runs organized
+experiment_name = "test_user_experiment"
+
+mlflow.set_experiment(experiment_name)
+
+
+class OpenAIModel(mlflow.pyfunc.PythonModel):
+    """
+    Custom MLflow model for OpenAI API with hyperparameters.
+    """
+    
+    def __init__(self, temperature=0.7, top_p=0.9, max_tokens=150):
+        self.temperature = temperature
+        self.top_p = top_p
+        self.max_tokens = max_tokens
+        # Don't store the client here to avoid pickling issues
+    
+    def predict(self, context, model_input):
+        """
+        Predict using OpenAI API with configured hyperparameters.
+        
+        Args:
+            context: MLflow model context
+            model_input: Input data (question string)
+            
+        Returns:
+            str: Generated response
+        """
+        # Create client inside predict method to avoid pickling issues
+        client = OpenAI(api_key=api_key)
+        
+        # Extract question from input
+        if isinstance(model_input, dict):
+            question = model_input.get("question", "default question")
+        else:
+            question = str(model_input)
+        
+        # Call OpenAI API with hyperparameters
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": question}
+            ],
+            temperature=self.temperature,
+            top_p=self.top_p,
+            max_tokens=self.max_tokens
+        )
+        
+        return response.choices[0].message.content
+
+
+
+
+prompt_name = "test_user_prompt"
+
+# Define prompt templates. MLflow supports both text and chat format prompt templates.
+PROMPT_V1 = [
+    {
+        "role": "system",
+        "content": "You are a helpful assistant. Answer the following question in a way that a kid can understand it .",
+    },
+    {
+        "role": "user",
+        # Use double curly braces to indicate variables.
+        "content": "Question: {{question}}",
+    },
+]
+
+
+# Register prompt using the smart registration function
+mlflow.genai.register_prompt(
+        name=prompt_name,
+        template=PROMPT_V1,
+        tags={"version": "v1"}
+
+)
+
+
+# --- 4. Create the Evaluation Dataset ---
+
+eval_dataset = [
+    {
+        "inputs": {"question": "What causes rain?"},
+        "expectations": {
+            "key_concepts": ["evaporation", "condensation", "precipitation"]
+        },
+    },
+    {
+        "inputs": {"question": "Explain the difference between AI and ML"},
+        "expectations": {
+            "key_concepts": ["artificial intelligence", "machine learning", "subset"]
+        },
+    },
+    {
+        "inputs": {"question": "How do vaccines work?"},
+        "expectations": {"key_concepts": ["immune", "antibodies", "protection"]},
+    },
+]
+
+client = OpenAI(api_key=api_key)
+
+
+
+@mlflow.trace
+def predict_fn(question: str) -> str:
+    # Load the specific version of the prompt from the mlflow prompt registry.
+    prompt = mlflow.genai.load_prompt(f"prompts:/{prompt_name}@latest")
+    rendered_prompt = prompt.format(question=question)
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini", 
+        messages=rendered_prompt,
+        temperature=0.7,
+        top_p=0.9,
+        max_tokens=150
+    )
+    return response.choices[0].message.content
+
+
+
+
+# Define LLM scorers
+is_concise = Guidelines(
+    name="is_concise", guidelines="The response should be concise and to the point."
+)
+is_professional = Guidelines(
+    name="is_professional", guidelines="The response should be in professional tone."
+)
+
+
+# Evaluate the coverage of the key concepts using custom scorer
+@scorer
+def concept_coverage(outputs: str, expectations: dict) -> Feedback:
+    concepts = set(expectations.get("key_concepts", []))
+    included = {c for c in concepts if c.lower() in outputs.lower()}
+    return Feedback(
+        value=len(included) / len(concepts),
+        rationale=(
+            f"Included {len(included)} out of {len(concepts)} concepts. Missing: {concepts - included}"
+        ),
+    )
+
+# --- 5. Main Evaluation with Model Registration ---
+
+# Define hyperparameters
+hyperparameters = {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 150
+}
+
+# Set the version for the predict function
+
+
+# Run evaluation for the single prompt version
+run_name = "Test_Run"
+with mlflow.start_run(run_name=run_name):
+
+    # Log basic parameters
+    mlflow.log_param("prompt_name", prompt_name)
+    mlflow.set_tag("evaluation_type", "prompt_comparison")
+    
+    # Log hyperparameters
+    mlflow.log_param("temperature", hyperparameters["temperature"])
+    mlflow.log_param("top_p", hyperparameters["top_p"])
+    mlflow.log_param("max_tokens", hyperparameters["max_tokens"])
+    
+    # Create and register the OpenAI model
+    openai_model = OpenAIModel(
+        temperature=hyperparameters["temperature"],
+        top_p=hyperparameters["top_p"],
+        max_tokens=hyperparameters["max_tokens"]
+    )
+    
+    # Create model signature
+    input_schema = Schema([ColSpec(DataType.string, "question")])
+    output_schema = Schema([ColSpec(DataType.string, "response")])
+    signature = ModelSignature(inputs=input_schema, outputs=output_schema)
+    
+    # Register the model
+    model_info = mlflow.pyfunc.log_model(
+        name="model",
+        python_model=openai_model,
+        registered_model_name="openai-test_user",
+        signature=signature,
+        input_example={"question": "What is machine learning?"},
+        metadata={
+            "model_type": "openai",
+            "base_model": "gpt-4o-mini",
+            "temperature": str(hyperparameters["temperature"]),
+            "top_p": str(hyperparameters["top_p"]),
+            "max_tokens": str(hyperparameters["max_tokens"]),
+            
+        }
+    ) 
+    
+    print(f"📝 Registered OpenAI model version for prompt")
+    
+    # Run evaluation
+    mlflow.genai.evaluate(
+        data=eval_dataset,
+        predict_fn=predict_fn,
+        scorers=[is_concise, is_professional, concept_coverage],
+    )
+
+
+
+
+

@@ -1,0 +1,761 @@
+MLflow 3.3.2 — GenAI Application
+Version: Draft 1.0.0 
+Author: Gaurav Sharma 
+Target MLflow version: 3.3.2
+Purpose
+This Document is a practical, step‑by‑step guide to adopting MLflow 3.3.2 across the company for end‑to‑end GenAI projects (prompt engineering, datasets, model configs, evaluation, deployment, observability). 
+Scope
+Covers the full GenAI lifecycle as managed in MLflow:
+
+Prompt registry & prompt versioning 	
+Dataset logging & versioning for training and evaluation 	
+Model & deployment tracking (including fine‑tuned models and endpoints) 	
+Experiments & metrics tracking for GenAI evaluations 	
+Prompt optimization and evaluation workflows 	
+Access, governance, and operational best practices 
+
+Connect Your Development Environment to MLflow
+This guide shows you how to connect your development environment to an MLflow Experiment. You can run MLflow on your local machine, self-host the open source MLflow service, or use a managed offering, such as Databricks Managed MLflow.
+MLFlow Experiments
+An MLflow Experiment is the container for your GenAI application. which will be holding all your runs.
+Prerequisites
+	
+
+Python Environment: Python 3.8+ with pip installed 	
+Mlflow along with a backend store and artifact store to maintain the centralised system. 	
+Local or Remote Server: Access to run MLflow tracking server 
+Setup Instructions
+Step 1: Install MLflow
+Install MLflow for local development:
+pip install --upgrade "mlflow>=3.1"
+
+ Step 2: Start MLflow Tracking Server
+Option A: Local Tracking (Default)
+import mlflow
+
+# Creates local mlruns directory for experiments
+mlflow.set_experiment("my-genai-experiment")
+
+
+ Option B: Remote Tracking Server
+# Start MLflow server (in a separate terminal)
+mlflow server --host 0.0.0.0 --port 5000
+
+ Configure client:
+import mlflow
+
+# Connect to remote MLflow server
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_experiment("my-genai-experiment")
+
+
+ Option C: Database Backend
+# Example with PostgreSQL
+mlflow server \
+    --backend-store-uri postgresql://user:password@localhost:5432/mlflow \
+    --default-artifact-root s3://my-mlflow-bucket/artifacts \
+    --host 0.0.0.0 \
+    --port 5000
+
+ Step 3: Configure Environment (Optional)
+For consistent configuration across your team, use environment variables:
+# .env file
+MLFLOW_TRACKING_URI=http://localhost:5000
+MLFLOW_EXPERIMENT_NAME=my-genai-experiment
+
+ Load in your Python code:
+import os
+from dotenv import load_dotenv
+import mlflow
+
+load_dotenv()
+
+# Set tracking URI and experiment
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "file:./mlruns"))
+mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_NAME", "default"))
+
+ Step 4: Verify Your Connection
+Create a test file and run this code:
+import mlflow
+
+# Print connection information
+print(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
+print(f"Active Experiment: {mlflow.get_experiment_by_name('my-genai-experiment')}")
+
+# Test logging
+with mlflow.start_run():
+    mlflow.log_param("test_param", "test_value")
+    print("✓ Successfully connected to MLflow!")
+
+
+ Step 5: Access MLflow UI
+Open your browser to view the MLflow UI:
+
+Local tracking: http://localhost:5000   (if running mlflow server) 	
+File-based tracking: Run mlflow ui in your project directory, then go to http://localhost:5000 
+Core MLflow Concepts for GenAI
+This section introduces the core data model and concepts in MLflow that are most relevant to GenAI workloads.
+1. Experiments
+	
+
+Top‑level containers for organizing runs. 	
+Each experiment has an ID, name, and metadata. 	
+Example API usage: 
+import mlflow
+
+# Create or set experiment
+mlflow.set_experiment("genai-demo-exp")
+
+ 2. Runs
+	
+
+Atomic execution units inside experiments.
+denotes single execution of your program file. 	
+Track parameters, metrics, tags, and artifacts. 	
+Example API usage: 
+with mlflow.start_run(run_name="baseline-prompt"):
+    mlflow.log_param("model", "gpt-4")
+    mlflow.log_metric("latency_ms", 1200)
+    mlflow.log_artifact("outputs/prompt.txt")
+
+ 3. Artifacts
+	
+
+Files or directories output by runs. 	
+Store prompts, datasets, evaluation reports, model weights. 	
+Example: 
+mlflow.log_artifact("outputs/eval_report.json", artifact_path="evals")
+
+ 4. Prompt Registry (MLflow 3.x Feature)
+	
+
+Central registry for managing prompts. 	
+Supports versioning, aliases, and lifecycle management. 	
+Example: 
+mlflow.genai.register_prompt(
+    name="some-prompt-name",
+    template="Your prompt text here with {{variables}}",
+    commit_message="Initial version",        # optional
+    tags={"author": "...", "task": "..."}    # optional
+)
+
+#load a prompt from the registry
+prompt_obj = mlflow.genai.load_prompt("prompts:/some-prompt-name@version_or_alias")
+
+
+
+ 5. Model Registry
+	
+
+Tracks GenAI models, fine‑tunes, and endpoints. 	
+Enables staging → production promotion workflows. 	
+Example: 
+import mlflow.pyfunc
+
+# Log a custom model
+class MyModel(mlflow.pyfunc.PythonModel):
+    def predict(self, context, model_input):
+        return ["Hello " + str(x) for x in model_input]
+
+mlflow.pyfunc.log_model("greet-model", python_model=MyModel())
+
+ 6. Tags & Metadata
+	
+
+Tags organize runs by use‑case, owner, or release 	stage. 	
+Example: 
+mlflow.set_tag("use_case", "customer-support")
+mlflow.set_tag("owner", "team-genai")
+
+ 7. Lineage & Provenance
+	
+
+Runs capture lineage between datasets, prompts, and models. 	
+Use artifacts + registry entries to reconstruct full project history. 
+
+Prompt Registry Deep Dive
+
+The Prompt Registry is one of the most important GenAI features in MLflow 3.3.2. It provides centralized versioning, lifecycle management, and governance for prompts used in applications, experiments, and deployed systems.
+
+
+Why Prompt Registry?
+	
+
+Version Control: Track changes to prompts across experiments and teams. 	
+Reproducibility: Recreate historical runs with the exact prompt version. 	
+Collaboration: Share approved prompt templates across projects. 	
+Lifecycle Management: Manage prompt versions through aliases like staging or production. 	
+Experimentation: Run A/B tests on prompt variants. 
+
+
+Key Concepts
+	
+
+Prompt Entity: A named prompt registered in the system. 	
+Prompt Version: Each change creates a new immutable version. 	
+Aliases: Human-friendly labels likelatest,staging, or production. 	
+URI Loading: Prompts can be loaded by version (prompts:/<name>/<version>) or alias (prompts:/<name>@production). 
+
+
+How It Works
+	
+
+Register prompts to ensure consistent, traceable versions. 	
+Each update creates a new immutable version. 	
+Aliases let you promote prompts (e.g., mark version 2 asproduction). 	
+Prompts are linked to experiments for reproducibility. 	
+Deprecated prompts remain available for audit purposes. 
+
+
+Usage in GenAI Projects
+	
+
+Experimentation: Try multiple prompts for the same task, compare results. 	
+Governance: Control which prompts are deployed in production systems. 	
+Traceability: Every run is tagged with the exact prompt version used. 	
+Collaboration: Teams can reuse prompts without duplicating work. 
+
+
+Example APIs and Python Snippets
+Register a new prompt:
+import mlflow
+
+prompt_v1 = mlflow.genai.register_prompt(
+    name="email_generator_prompt",
+    template="Write a polite professional email to schedule a meeting with {{name}}.",
+    commit_message="Initial version",
+    tags={"team": "sales", "env": "dev"}
+)
+
+
+ Retrieve a prompt by alias:
+prompt = mlflow.genai.load_prompt("prompts:/email_generator_prompt@production")
+print(prompt.template)
+
+ Set alias for a version:
+mlflow.genai.set_prompt_alias(
+    name="email_generator_prompt",
+    alias="production",
+    version=1
+)
+
+ Delete a prompt alias:
+mlflow.genai.delete_prompt_alias(
+    name="email_generator_prompt",
+    alias="staging"
+)
+
+
+
+
+Evaluation of GenAI Applications
+
+Evaluating GenAI applications in MLflow 3.3.2 is critical to ensure correctness, quality, and reliability. Evaluations apply not only to LLM outputs (text generation, summarization, Q&A, etc.) but also to AI agents (multi-step workflows using tools). MLflow provides a unified evaluation framework that supports heuristic metrics, LLM judges, and human feedback, along with trace-based evaluation for complex agents.
+Evaluation Approaches in MLflow 3.3.2
+You can evaluate GenAI applications using three main approaches. Each has trade-offs in terms of cost, scalability, flexibility, and consistency.
+
+Type	Heuristic (Custom Scorers)	LLM-based (Judges)	Human Feedback
+Description	Deterministic metrics such as exact_match, BLEU, ROUGE.	Use LLMs to judge subjective qualities like correctness, helpfulness, tone.	Domain experts or end-users provide ratings/feedback.
+Cost	Minimal	API costs for LLM calls	High (time of reviewers)
+Scalability	Highly scalable	Scalable with compute budget	Limited
+Consistency	Perfect consistency	Somewhat consistent (depends on prompt design)	Variable (inter-annotator agreement)
+Flexibility	Limited to predefined patterns	Highly flexible with custom prompts	Maximum flexibility
+MLflow Guide	Custom Code-based Scorers	LLM-based Scorers (Judges)	Feedback APIs
+
+Evaluation API
+import mlflow.genai
+
+results = mlflow.genai.evaluate(
+    data=eval_dataset,
+    predict_fn=predict_fn,
+    scorers=[exact_match, content_quality]
+)
+
+
+
+Types of Scorers
+MLflow supports three major categories of scorers to evaluate LLMs and agents:
+
+Scorer Type	What it Does	Example Usage
+Custom Code-based Scorers	Write Python functions decorated with @scorer to compute deterministic or rule-based metrics.	Exact match, string length check, numeric scores.
+LLM-based Judges	Let an LLM decide based on guidelines or prompts. Includes guidelines judge and custom prompt judge APIs.	Judge if the response is factually correct, polite, or high-quality.
+Human Feedback	Collect domain expert or user ratings using MLflow’s log_feedback() API.	User survey responses, A/B testing outcomes.
+
+Evaluating LLM Outputs
+LLM evaluation focuses on final text outputs such as summaries, answers, or generated emails.
+Example: checking correctness, fluency, tone, or factuality.
+1. Code-based Custom Scorers
+
+from mlflow.genai.scorers import scorer, Feedback
+
+# A simple exact match scorer
+
+@scorer
+def exact_match(inputs, outputs, expectations):
+  return outputs["text"].strip() == expectations["expected_text"]
+  
+# A numeric quality scorer with rationale
+
+@scorer
+def content_quality(inputs, outputs):
+  text = outputs["text"]
+  score = len(text.split()) / 100  # toy metric
+  return Feedback(
+    name="content_quality",
+    value=score,
+    rationale="Score based on word length",
+    metadata={"word_count": len(text.split())})
+
+
+
+
+
+
+
+2. LLM-based Judges
+MLflow provides built-in APIs for guideline-based and prompt-based LLM judges.
+Bring Your Own Prompts with custom_prompt_judge:
+from mlflow.genai.judges import custom_prompt_judge
+from mlflow.genai.scorers import scorer
+
+issue_resolution_prompt = """
+Evaluate the conversation. Decide if the issue was resolved.
+
+[[fully_resolved]]
+[[partially_resolved]]
+[[needs_follow_up]]
+
+Conversation: {{conversation}}
+"""
+
+@scorer
+def is_issue_resolved(inputs, outputs):
+    issue_judge = custom_prompt_judge(
+        name="issue_resolution",
+        prompt_template=issue_resolution_prompt,
+        numeric_values={"fully_resolved": 1, "partially_resolved": 0.5, "needs_follow_up": 0},
+    )
+    conversation = inputs["messages"] + outputs["messages"]
+    return issue_judge(conversation=conversation)
+
+
+
+
+Prompt Registry Integration:
+
+from mlflow.genai import register_prompt
+
+register_prompt(
+    name="issue_resolution",
+    template=issue_resolution_prompt,
+)
+
+
+
+
+
+3. Human Feedback
+Human evaluators can provide ratings through MLflow’s feedback API:
+
+import mlflow
+
+mlflow.log_feedback(
+    name="helpfulness",
+    value=4,
+    rationale="The answer was mostly clear, but missed one detail.",
+    metadata={"reviewer": "domain_expert"}
+)
+
+
+
+
+
+Agents Evaluation
+
+AI Agents are an emerging pattern of GenAI applications that can use tools, make decisions, and execute multi-step workflows. However, evaluating the performance of these complex agents is challenging. MLflow 3.3.2 provides a powerful toolkit to systematically evaluate agent behavior using traces and scorers.
+
+
+Agent Evaluation Workflow
+
+Build your agent
+Create an AI agent with tools, instructions, and capabilities for your specific use case. 
+
+Create evaluation dataset
+Design test cases with inputs and expectations for both outputs and agent behaviors like tool usage. 
+
+Define agent-specific scorers
+Create scorers that evaluate multi-step agent behaviors using traces. 
+
+Run evaluation
+Execute the evaluation and analyze both final outputs and intermediate agent behaviors in the MLflow UI. 
+
+
+Example: Evaluating a Tool-Calling Math Agent
+Prerequisites
+
+pip install --upgrade mlflow>=3.3 openai
+
+
+
+
+Run an MLflow tracking server locally:
+mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+
+
+
+
+Connect your environment:
+
+import mlflow.set_tracking_uri("http://localhost:5000")
+
+
+
+
+
+
+Step 1: Build an Agent
+We’ll build a Math Agent that can use tools to solve arithmetic problems.
+from agents import Agent, Runner, function_tool
+
+@function_tool
+def add(a: float, b: float) -> float:
+    """Adds two numbers."""
+    return a + b
+
+@function_tool
+def multiply(a: float, b: float) -> float:
+    """Multiply two numbers."""
+    return a * b
+
+@function_tool
+def modular(a: int, b: int) -> int:
+    """Modular arithmetic"""
+    return a % b
+
+agent = Agent(
+    name="Math Agent",
+    instructions=(
+        "You will be given a math question. Calculate the answer using the given calculator tools. "
+        "Return the final number only as an integer."
+    ),
+    tools=[add, multiply, modular],
+)
+
+# Test locally
+from agents import Runner
+
+result = await Runner.run(agent, "What is 15% of 240?")
+print(result.final_output)  # 36
+
+# Wrap for MLflow evaluation
+def predict_fn(question: str) -> str:
+    return Runner.run_sync(agent, question).final_output
+
+
+
+
+
+
+
+Step 2: Create Evaluation Dataset
+We now define test cases that specify both expected answers and expected tool calls.
+eval_dataset = [
+    {
+        "inputs": {"task": "What is 15% of 240?"},
+        "expectations": {"answer": 36, "tool_calls": ["multiply"]},
+    },
+    {
+        "inputs": {
+            "task": "I have 8 cookies and 3 friends. How many more cookies should I buy to share equally?"
+        },
+        "expectations": {"answer": 1, "tool_calls": ["modular", "add"]},
+    },
+    {
+        "inputs": {
+            "task": "I bought 2 shares of stock at $100 each. It's now worth $150. How much profit did I make?"
+        },
+        "expectations": {"answer": 100, "tool_calls": ["add", "multiply"]},
+    },
+]
+
+
+
+
+
+
+
+Step 3: Define Agent-Specific Scorers
+Scorers can check both final outputs and tool usage by parsing traces.
+from mlflow.entities import Feedback, SpanType, Trace
+from mlflow.genai import scorer
+
+@scorer
+def exact_match(outputs, expectations) -> bool:
+    return int(outputs) == expectations["answer"]
+
+@scorer
+def uses_correct_tools(trace: Trace, expectations: dict) -> Feedback:
+    """Evaluate if agent used tools appropriately"""
+    expected_tools = expectations["tool_calls"]
+
+    # Extract actual tool calls from trace
+    tool_spans = trace.search_spans(span_type=SpanType.TOOL)
+    tool_names = [span.name for span in tool_spans]
+
+    score = "yes" if tool_names == expected_tools else "no"
+    rationale = (
+        "The agent used the correct tools."
+        if tool_names == expected_tools
+        else f"The agent used the incorrect tools: {tool_names}"
+    )
+
+    return Feedback(value=score, rationale=rationale)
+
+
+
+
+
+
+
+Step 4: Run the Evaluation
+
+results = mlflow.genai.evaluate(
+    data=eval_dataset,
+    predict_fn=predict_fn,
+    scorers=[exact_match, uses_correct_tools]
+)
+
+
+
+
+Open the MLflow UI (http://localhost:5000) to inspect evaluation results.
+
+
+Configure Parallelization
+Running complex agents can be slow. MLflow accelerates evaluations using a background threadpool.
+
+export MLFLOW_GENAI_EVAL_MAX_WORKERS=10
+
+
+
+
+
+
+Evaluating MLflow Models as Agents
+You can also evaluate agents packaged as MLflow Models:
+
+import mlflow
+
+# Load model outside prediction function
+model = mlflow.pyfunc.load_model("models:/math_agent/1")
+
+def predict_fn(question: str) -> str:
+    return model.predict(question)
+
+mlflow.genai.evaluate(
+    data=eval_dataset,
+    predict_fn=predict_fn,
+    scorers=[exact_match, uses_correct_tools]
+)
+
+
+
+
+
+With this workflow, MLflow enables you to evaluate both what the agent produces and how it works internally, ensuring reliable, production-ready GenAI agents.
+
+Model Registry for GenAI Models
+
+The Model Registry used for registering the model in three different ways 
+
+Registering the llm itself e.g. OpenAI, Gemini etc.
+Registering the model with hyperparameters like top p, temperature, top k etc.
+Also, you can register your own ml model.
+
+Use of pyfunc wrapper
+
+Custom Inference Logic: Wrap calls to external LLM APIs while controlling temperature, top_p, max_tokens, or prompt formatting.  
+Standard API: Every pyfunc model exposes a .predict() method → ensures smooth deployment and serving.  
+Artifact & Metadata Tracking: Tokenizers, prompt templates, and hyperparameters can be attached as artifacts or metadata.  
+Registry Integration: Once logged as pyfunc, the model can be versioned and transitioned across staging → production.
+
+Example: Registering a GenAI Model with PyFunc
+import mlflow
+import mlflow.pyfunc
+
+class OpenAIModel(mlflow.pyfunc.PythonModel):
+    def __init__(self, temperature=0.7, top_p=0.9, max_tokens=150):
+        self.temperature = temperature
+        self.top_p = top_p
+        self.max_tokens = max_tokens
+
+    def predict(self, context, model_input):
+        # Call OpenAI (or Gemini) API with custom parameters
+        question = model_input.get("question", "")
+        return f"Response to: {question}"
+
+# Log and register the model
+with mlflow.start_run():
+    mlflow.pyfunc.log_model(
+        artifact_path="genai_model",
+        python_model=OpenAIModel(),
+        registered_model_name="openai_genai_model",
+        input_example={"question": "What is machine learning?"},
+        metadata={"temperature": "0.7", "prompt_version": "v1"}
+    )
+
+mlflow.transition_model_version_stage(
+    name="openai_genai_model", version=1, stage="Production"
+)
+
+
+
+
+
+Best Practices for GenAI with MLflow
+	
+
+Centralized Experiments: Use MLflow experiments to organize runs by project or application. you can name your experiments on project names	
+Consistent Environment: Log Python dependencies and environment info using MLflow’s mlflow.log_artifact or environment 	logging. 	
+Prompt & Model Linking: Always link prompts to their respective model versions and datasets for full lineage.  Also, create a linkage with each run	
+Regular Evaluation: Periodically re-evaluate deployed prompts/models to detect performance drift.  	
+Reproducibility: Never overwrite prompt/model versions; always register a new version for changes. 
+Structuring runs by prompt versions and log evaluations, so that prompts can be compared based on the evaluation metrics.
+
+Core MLflow Python APIs for GenAI Applications
+
+This step provides a comprehensive overview of the basic and essential MLflow Python APIs frequently used in GenAI projects. These APIs enable tracking, evaluation, prompt and model management, and tracing complex pipelines.
+
+
+1. Managing Runs
+	
+
+Start/End Runs: 
+import mlflow
+
+with mlflow.start_run() as run:
+    # your code
+    # Run automatically ends after context
+
+# Manual approach:
+mlflow.start_run()
+# ... your code ...
+mlflow.end_run()
+
+	
+
+Other Useful Run APIs: 	mlflow.active_run(): Get current active run. 	
+from mlflow import MlflowClient  
+client = MlflowClient()
+client.delete_run(run_id="your-run-id")    :  Delete a run
+
+mlflow.get_run(run_id): Fetch run data by ID. 	 
+
+
+2. Logging Data to a Run
+	
+
+Parameters: 
+mlflow.log_param("learning_rate", 0.01)
+mlflow.log_params({"batch_size": 32, "epochs": 10})
+
+	
+
+Metrics: 
+mlflow.log_metric("accuracy", 0.92, step=1)
+mlflow.log_metrics({"rmse": 2.5, "mse": 6.25}, step=1)
+
+	
+
+Tags: 
+mlflow.set_tag("team", "AI")
+mlflow.set_tags({"env": "dev", "project": "RAG-bot"})
+
+	
+
+Artifacts: 
+mlflow.log_artifact("file.txt")
+mlflow.log_artifacts("my_dir")
+mlflow.log_dict({"key": "value"}, "dict.json")
+mlflow.log_text("Hello world", "greeting.txt")
+mlflow.log_figure(fig, "plot.png")
+mlflow.log_table(df, "table.json")
+mlflow.log_input(dataset, context="training")
+
+3. Experiments
+	
+
+Core Functions: 
+mlflow.create_experiment("My Experiment")
+mlflow.set_experiment("My Experiment")
+mlflow.get_experiment(experiment_id)
+mlflow.get_experiment_by_name("My Experiment")
+
+
+from mlflow import MlflowClient
+
+client = MlflowClient()
+client.delete_experiment(experiment_id)
+
+client.set_experiment_tag(experiment_id, "key", "value")
+
+
+4. Automatic Logging (Auto logging)
+	
+
+Purpose: Automatically log parameters, metrics, artifacts, and models from supported libraries. 
+mlflow.autolog()
+
+
+	
+
+Configurable Options: log_models=False, 	log_input_examples=True, etc. 	
+5. Model Registry
+	
+
+Register Models: 
+from mlflow.models import register_model
+from mlflow import MlflowClient
+
+# Register model
+register_model(
+    model_uri="runs:/<run_id>/model",
+    name="MyModel"
+)
+
+# Transition stage
+client = MlflowClient()
+client.transition_model_version_stage(
+    name="MyModel",
+    version=1,
+    stage="Production"
+)
+
+
+6. Searching
+mlflow.search_runs()
+mlflow.search_experiments()
+
+7. MLflow Tracing APIs (for LLMs & Pipelines)
+	
+
+Decorator and Context Manager: 
+@mlflow.trace
+def some_function(x):
+    return x*2
+
+with mlflow.start_span("span_name") as span:
+    # custom trace code
+    
+
+
+
+Search Traces: mlflow.search_traces() 	
+Feedback: mlflow.log_feedback(), 	mlflow.log_expectation() 
+8. Configuration & Utilities
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.get_tracking_uri()
+mlflow.set_registry_uri("http://localhost:5000")
+mlflow.run("./my_mlflow_project")
+
+

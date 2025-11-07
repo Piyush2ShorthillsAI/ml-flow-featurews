@@ -1,0 +1,107 @@
+╔════════════════════════════════════════════════════════════════════╗
+║         REMOTE MLFLOW SERVER - QUICK SETUP GUIDE                   ║
+║         Server: https://mlflow.shorthills.ai                       ║
+╚════════════════════════════════════════════════════════════════════╝
+
+✅ YES! ALL RESULTS ARE STORED ON THE REMOTE SERVER!
+
+When you use: MLFLOW_TRACKING_URI=https://mlflow.shorthills.ai
+Everything goes to that server (not your local computer).
+
+═══════════════════════════════════════════════════════════════════════
+
+📋 SETUP CHECKLIST:
+
+□ Step 1: Copy environment file
+   cp .env.example .env
+
+□ Step 2: Edit .env with your details
+   nano .env
+
+□ Step 3: Set these values in .env:
+   
+   MLFLOW_TRACKING_URI=https://mlflow.shorthills.ai
+   MLFLOW_TRACKING_USERNAME=your_username        ← Your credentials
+   MLFLOW_TRACKING_PASSWORD=your_password        ← Your credentials
+   MLFLOW_EXPERIMENT_NAME=yourname_demo          ← Use YOUR name!
+   
+   GEMINI_API_KEY=your_gemini_key                ← Get from Google
+   DEFAULT_LLM_PROVIDER=gemini
+
+□ Step 4: Test connection
+   python test_remote_connection.py
+
+□ Step 5: Run demo (no need to start local server!)
+   python quickstart_gemini.py
+
+□ Step 6: View results
+   Open: https://mlflow.shorthills.ai
+   Login with your credentials
+
+═══════════════════════════════════════════════════════════════════════
+
+⚠️  CRITICAL: USE UNIQUE NAMES!
+
+This is a SHARED server. Other users can see experiments.
+
+❌ DON'T USE:
+   - "test", "demo", "experiment"
+   - "qa_prompt", "genai_model"
+   - Generic names
+
+✅ DO USE:
+   - "john_doe_demo", "alice_project", "bob_test_v1"
+   - "john_qa_prompt", "alice_genai_model"
+   - Your name + description
+
+═══════════════════════════════════════════════════════════════════════
+
+📊 WHAT GETS STORED REMOTELY:
+
+✓ All experiments and runs
+✓ Parameters and metrics
+✓ Artifacts (models, files, datasets)
+✓ Traces (LLM calls, token usage)
+✓ Registered prompts (all versions)
+✓ Registered models (all versions)
+✓ Evaluation results
+
+═══════════════════════════════════════════════════════════════════════
+
+💡 KEY DIFFERENCES: Local vs Remote
+
+                    LOCAL                  REMOTE
+Storage:            Your computer          Remote server
+Access:             Only you              Team access
+Setup:              Run mlflow ui         Just configure .env
+URL:                localhost:5000        mlflow.shorthills.ai
+Authentication:     None                  Username/password
+Persistence:        Can be lost           Always available
+Collaboration:      None                  Full team access
+
+═══════════════════════════════════════════════════════════════════════
+
+🚀 QUICK START COMMANDS:
+
+# Setup
+cp .env.example .env
+nano .env  # Add your credentials
+
+# Test
+python test_remote_connection.py
+
+# Run
+python quickstart_gemini.py
+
+# View
+# Open: https://mlflow.shorthills.ai
+
+═══════════════════════════════════════════════════════════════════════
+
+📖 MORE INFO:
+
+• REMOTE_SERVER_GUIDE.md   - Complete guide
+• config.py                - Configuration code
+• test_remote_connection.py - Connection tester
+
+═══════════════════════════════════════════════════════════════════════

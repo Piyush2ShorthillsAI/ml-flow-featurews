@@ -1,0 +1,30 @@
+========================================
+MLflow with Gemini 2.5 Pro - Quick Start
+========================================
+
+🎯 FASTEST WAY TO GET STARTED:
+
+1. Get Gemini API Key (2 min):
+   → https://aistudio.google.com/app/apikey
+   
+2. Setup (1 min):
+   cp .env.example .env
+   # Edit .env, add: GEMINI_API_KEY=your-key
+   
+3. Start MLflow (new terminal):
+   mlflow ui --port 5000
+   
+4. Run Demo:
+   python quickstart_gemini.py
+   
+5. View Results:
+   → http://localhost:5000
+
+✅ DONE! Your first MLflow + Gemini demo is complete!
+
+📚 Next Steps:
+   • python 05_tracing/gemini_tracing.py
+   • Read: GEMINI_QUICKSTART.md
+   • Explore: README_GEMINI.md
+
+🚀 Happy Building!
