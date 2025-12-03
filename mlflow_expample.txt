@@ -1,0 +1,734 @@
+"""
+MLflow-enabled Gemini Service Wrapper
+Following Shorthills AI MLflow Best Practices v1.0.0
+
+This module provides MLflow tracking, evaluation, and model registry integration
+for the Gemini AI email generation service.
+
+Author: Integration Team
+Target MLflow version: 3.3.2
+Purpose: End-to-end GenAI lifecycle management for email generation
+"""
+
+import os
+import time
+import mlflow
+import mlflow.pyfunc
+from mlflow.models.signature import ModelSignature
+from mlflow.types import DataType, Schema, ColSpec
+from mlflow.entities import Feedback
+from mlflow.genai import scorer
+from typing import Dict, Any, List, Optional
+from pathlib import Path
+from dotenv import load_dotenv
+import hashlib
+import re
+
+# Import the original Gemini service
+from .gemini_service import GeminiService
+
+# Load environment variables
+backend_dir = Path(__file__).parent.parent.parent
+env_path = backend_dir / '.env'
+load_dotenv(dotenv_path=env_path)
+
+
+class MLflowGeminiService:
+    """
+    MLflow-enabled wrapper for GeminiService with full lifecycle management
+    
+    Features:
+    - Experiment tracking with parameters, metrics, and artifacts
+    - Prompt registry integration for version control
+    - Model registry for deployment tracking
+    - Evaluation framework for quality assessment
+    - Tracing for observability
+    """
+    
+    def __init__(self):
+        """Initialize MLflow-enabled Gemini service"""
+        # Initialize base Gemini service
+        self.gemini_service = GeminiService()
+        
+        # Initialize MLflow connection
+        self._initialize_mlflow()
+        
+        # Register default prompts if needed
+        self._setup_prompt_registry()
+    
+    def _initialize_mlflow(self):
+        """
+        Initialize MLflow tracking with remote server authentication
+        Following: Setup Instructions from best practices doc
+        """
+        try:
+            # Get tracking URI from environment
+            tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "")
+            
+            # Get authentication credentials from environment
+            username = os.getenv("YOUR_USER_NAME", "").strip()
+            password = os.getenv("YOUR_PASSWORD", "").strip()
+            
+            # Set authentication environment variables if credentials are provided
+            if username and password and tracking_uri:
+                os.environ["MLFLOW_TRACKING_USERNAME"] = username
+                os.environ["MLFLOW_TRACKING_PASSWORD"] = password
+                print(f"✅ MLflow authentication configured for user: {username}")
+            else:
+                print("⚠️ MLflow credentials not fully configured. Check .env file.")
+            
+            # Set artifact location to avoid permission issues
+            # Use local directory with proper permissions for artifact staging
+            artifact_dir = os.getenv("MLFLOW_ARTIFACT_DIR", "/tmp/mlflow_artifacts")
+            os.makedirs(artifact_dir, exist_ok=True)
+            os.environ["MLFLOW_ARTIFACT_DIR"] = artifact_dir
+            print(f"✅ MLflow artifact directory: {artifact_dir}")
+            
+            # Set tracking URI
+            mlflow.set_tracking_uri(tracking_uri)
+            
+            # Set experiment name
+            experiment_name = os.getenv("MLFLOW_EXPERIMENT_NAME", "message-generation")
+            mlflow.set_experiment(experiment_name)
+            
+            print(f"✅ MLflow initialized:")
+            print(f"   📊 Tracking URI: {mlflow.get_tracking_uri()}")
+            print(f"   🧪 Experiment: {experiment_name}")
+            
+        except Exception as e:
+            print(f"⚠️ MLflow initialization warning: {str(e)}")
+            print("   Continuing without MLflow tracking...")
+    
+    def _get_cost_category(self, cost_usd: float) -> str:
+        """
+        Categorize cost for easy filtering in MLflow UI
+        
+        Args:
+            cost_usd: Total cost in USD
+            
+        Returns:
+            Cost category string
+        """
+        if cost_usd < 0.001:
+            return "micro"  # Less than $0.001
+        elif cost_usd < 0.01:
+            return "low"  # $0.001 - $0.01
+        elif cost_usd < 0.05:
+            return "medium"  # $0.01 - $0.05
+        elif cost_usd < 0.10:
+            return "high"  # $0.05 - $0.10
+        else:
+            return "very_high"  # Over $0.10
+    
+    def _get_prompt_version_number(self) -> int:
+        """
+        Get the next version number for the prompt by checking existing tags
+        
+        Returns:
+            Next version number as integer
+        """
+        try:
+            # Try to get the latest prompt and extract version
+            existing_prompt = mlflow.genai.load_prompt("prompts:/email_generation_prompt@latest")
+            existing_tags = existing_prompt.to_dict().get('tags', {})
+            current_version = existing_tags.get('version', 'v1.0')
+            
+            # Extract number from version string (e.g., "v2.0" -> 2)
+            version_match = re.search(r'v(\d+)', current_version)
+            if version_match:
+                current_num = int(version_match.group(1))
+                return current_num + 1
+            else:
+                return 2  # If can't parse, assume this is v2
+        except:
+            # No existing prompt found
+            return 1
+    
+    def _register_prompt_if_changed(self, prompt_name: str, new_template, tags: dict = None):
+        """
+        Register a prompt only if it has changed, following MLflow best practices
+        
+        This helper function:
+        - Compares new template with latest registered version
+        - Reuses existing version if unchanged
+        - Registers new version only if content differs
+        
+        Args:
+            prompt_name: Name of the prompt to register
+            new_template: New prompt template (string or list for chat format)
+            tags: Optional tags to attach to the prompt
+            
+        Returns:
+            The registered or existing prompt object
+        """
+        try:
+            # Try to get the latest registered prompt
+            latest_prompt = mlflow.genai.load_prompt(f"prompts:/{prompt_name}@latest")
+
+            # Compare template and tags - handle both string and list templates
+            if isinstance(new_template, list) and isinstance(latest_prompt.template, list):
+                # Both are lists (chat format) - compare directly
+                templates_equal = latest_prompt.template == new_template
+            elif isinstance(new_template, str) and isinstance(latest_prompt.template, str):
+                # Both are strings - compare with strip for whitespace normalization
+                templates_equal = latest_prompt.template.strip() == new_template.strip()
+            else:
+                # Different types - they're different
+                templates_equal = False
+                
+            if templates_equal:
+                # Template is the same, reuse existing version
+                # Note: We only compare template, not tags (tags like timestamp change every time)
+                version = latest_prompt.tags.get('version', 'unknown')
+                print(f"✅ Using existing prompt (unchanged): {prompt_name}@{version}")
+                print(f"   📝 No changes detected")
+                self.current_prompt_version = version
+                return latest_prompt
+            else:
+                print(f"🔄 Prompt content changed! Registering new version for '{prompt_name}'...")
+                
+        except mlflow.exceptions.MlflowException:
+            # No prompt registered yet → first version
+            print(f"📝 Prompt '{prompt_name}' not found. Registering first version...")
+        except Exception as e:
+            print(f"⚠️ Error loading existing prompt: {str(e)[:100]}")
+            print(f"   Registering new version...")
+
+        # Register prompt (first time or new version)
+        registered_prompt = mlflow.genai.register_prompt(
+            name=prompt_name,
+            template=new_template,
+            tags=tags or {}
+        )
+        
+        # Extract version from tags
+        version = (tags or {}).get('version', 'unknown')
+        self.current_prompt_version = version
+        print(f"✅ Registered NEW prompt version: {prompt_name}@{version}")
+        
+        return registered_prompt
+    
+    def _setup_prompt_registry(self):
+        """
+        Set up prompt registry for version control with automatic version detection
+        Following: MLflow official best practices for prompt registry
+        
+        This method automatically:
+        - Detects when prompt content changes
+        - Creates new version if content is different
+        - Reuses existing version if content is identical
+        """
+        try:
+            # Define the email generation prompt template
+            email_prompt_template = """Act like a relationship communication coach. You specialize in helping people express emotions clearly and naturally, both in casual everyday messages and in respectful, thoughtful formal notes.
+ 
+Objective: I will provide you with an audio transcript (relationship context). Your task is to transform audio into exact message and maintain the same tone:
+- output transcribed text should be warm same as audio, conversational, casual tone (like talking to a close partner/friend).
+- A respectful, heartfelt, carefully phrased (like writing a note that shows maturity and thoughtfulness).
+ 
+Format Requirements:
+- Write transcribed text in bullet points for easy recall.
+- Match the tone perfectly with the original audio context (don't change the emotional intent).
+- Enhance with on-point detail that makes each bullet more memorable and emotionally clear.
+- Ensure transcribed text should be recall-friendly, structured, and easy to remember.
+ 
+Step-by-step instructions:
+1. Transcribe the provided relationship audio.
+2. Extract the main emotions, intentions, and key points from the audio.
+3. Present transcribed text as a  bullet-point message, keeping them easy to remember but detailed enough to express depth.
+4. Ensure transcribed text keep the same meaning but differ in delivery style.
+5. Do not add your own emotions or interpretations—stay true to the original tone of the audio.
+ 
+End result: transcribed text should be written in structured, recall-friendly bullet points, perfectly suited for forming a relationship message."""
+            
+            # Get next version number for tags (in case we need to register)
+            version_num = self._get_prompt_version_number()
+            version_tag = f"v{version_num}.0"
+            
+            # Prepare tags
+            prompt_tags = {
+                "version": version_tag,
+                "team": "genai",
+                "task": "email_generation",
+                "model": "gemini-2.5-pro",
+                "author": "integration_team",
+                "timestamp": str(int(time.time()))
+            }
+            
+            # Use the helper function to register only if changed
+            self._register_prompt_if_changed(
+                prompt_name="email_generation_prompt",
+                new_template=email_prompt_template,
+                tags=prompt_tags
+            )
+            
+        except Exception as e:
+            print(f"⚠️ Prompt registry setup warning: {str(e)}")
+            print("   Continuing without prompt registry...")
+            self.current_prompt_version = "unknown"
+    
+    @mlflow.trace(name="gemini_email_generation", span_type="CHAIN")
+    def generate_email_from_audio_files_direct(
+        self,
+        relationship_audio_path: str,
+        message_audio_paths: List[str],
+        recipient_name: str = "",
+        recipient_email: str = "",
+        relationship: str = "professional",
+        contact_id: Optional[str] = None,
+        user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Generate email from audio files with full MLflow tracking
+        
+        Following: Core MLflow Python APIs from best practices doc
+        
+        Args:
+            relationship_audio_path: Path to relationship context audio
+            message_audio_paths: List of paths to message audio files
+            recipient_name: Name of email recipient
+            recipient_email: Email address of recipient
+            relationship: Type of relationship (professional/personal)
+            contact_id: CRM contact ID for tracking
+            user_id: User ID for tracking
+            
+        Returns:
+            Dict containing generated email content and metadata
+        """
+        # Start MLflow run with proper naming
+        run_name = f"email_gen_{contact_id or 'unknown'}_{int(time.time())}"
+        
+        with mlflow.start_run(run_name=run_name) as run:
+            try:
+                # ====================================================================
+                # STEP 1: Log Input Parameters
+                # Following: Logging Data to a Run section
+                # ====================================================================
+                mlflow.log_params({
+                    "model": "gemini-2.5-pro",
+                    "recipient_name": recipient_name or "Not specified",
+                    "recipient_email": recipient_email or "Not specified",
+                    "relationship_type": relationship,
+                    "num_message_audios": len(message_audio_paths),
+                    "relationship_audio_file": Path(relationship_audio_path).name
+                })
+                
+                # Log message audio filenames
+                for i, path in enumerate(message_audio_paths):
+                    mlflow.log_param(f"message_audio_{i+1}", Path(path).name)
+                
+                # ====================================================================
+                # STEP 1.5: Link Registered Prompt to This Run
+                # This makes the prompt appear in "Registered prompts" section
+                # ====================================================================
+                try:
+                    prompt_version = getattr(self, 'current_prompt_version', 'v1.0')
+                    # Log the prompt URI so it appears in "Registered prompts" section
+                    mlflow.log_param("registered_prompt_uri", f"prompts:/email_generation_prompt@{prompt_version}")
+                    mlflow.log_param("registered_prompt_name", "email_generation_prompt")
+                    
+                    # Try to link the prompt to this run (this may require MLflow 2.8+)
+                    try:
+                        # Load and log the registered prompt
+                        registered_prompt = mlflow.genai.load_prompt(f"prompts:/email_generation_prompt@latest")
+                        # Log as a tag for visibility
+                        mlflow.set_tag("mlflow.promptTemplate", f"email_generation_prompt@{prompt_version}")
+                    except Exception as prompt_link_error:
+                        print(f"   ⚠️ Could not link prompt to run: {prompt_link_error}")
+                except Exception as e:
+                    print(f"   ⚠️ Could not log prompt reference: {e}")
+                
+                # ====================================================================
+                # STEP 2: Set Tags for Organization
+                # Following: Tags & Metadata section
+                # ====================================================================
+                mlflow.set_tags({
+                    "task": "email_generation",
+                    "model_type": "gemini",
+                    "processing_mode": "direct_audio",
+                    "relationship_type": relationship,
+                    "use_case": "audio_based_message_generation",
+                    "team": "genai",
+                    "env": os.getenv("ENVIRONMENT", "production"),
+                    "prompt_version": getattr(self, 'current_prompt_version', 'unknown')
+                })
+                
+                # ====================================================================
+                # STEP 3: Track Processing Time
+                # Following: Core MLflow Concepts - Metrics
+                # ====================================================================
+                overall_start_time = time.time()
+                
+                # Call the original Gemini service
+                print(f"🎵 Processing {len(message_audio_paths)} audio files with MLflow tracking...")
+                
+                result = self.gemini_service.generate_email_from_audio_files_direct(
+                    relationship_audio_path=relationship_audio_path,
+                    message_audio_paths=message_audio_paths,
+                    recipient_name=recipient_name,
+                    recipient_email=recipient_email,
+                    relationship=relationship
+                )
+                
+                total_duration = time.time() - overall_start_time
+                
+                # Extract content and metadata
+                generated_content = result.get("content", "")
+                token_metadata = result.get("token_metadata", {})
+                
+                # ====================================================================
+                # STEP 4: Log Metrics
+                # Following: Logging Data to a Run - Metrics
+                # ====================================================================
+                mlflow.log_metrics({
+                    "total_processing_duration_seconds": total_duration,
+                    "response_length_chars": len(generated_content),
+                    "prompt_tokens": token_metadata.get("prompt_tokens", 0),
+                    "completion_tokens": token_metadata.get("completion_tokens", 0),
+                    "total_tokens": token_metadata.get("total_tokens", 0),
+                    "cached_content_tokens": token_metadata.get("cached_content_tokens", 0),
+                })
+                
+                # Calculate derived metrics
+                if token_metadata.get("total_tokens", 0) > 0 and total_duration > 0:
+                    mlflow.log_metric("tokens_per_second", token_metadata["total_tokens"] / total_duration)
+                
+                if token_metadata.get("total_tokens", 0) > 0 and generated_content:
+                    mlflow.log_metric("chars_per_token", len(generated_content) / token_metadata["total_tokens"])
+                
+                # ====================================================================
+                # Calculate and Log Cost
+                # Using existing TokenLogger for accurate Gemini 2.5 Pro pricing
+                # ====================================================================
+                prompt_tokens = token_metadata.get("prompt_tokens", 0)
+                completion_tokens = token_metadata.get("completion_tokens", 0)
+                cached_tokens = token_metadata.get("cached_content_tokens", 0)
+                
+                # Import and use existing cost calculation
+                try:
+                    import sys
+                    insights_path = Path(__file__).parent.parent.parent / 'insights'
+                    if str(insights_path) not in sys.path:
+                        sys.path.insert(0, str(insights_path))
+                    from token_logger import TokenLogger
+                    
+                    token_logger = TokenLogger()
+                    total_cost_usd = token_logger._calculate_gemini_25_pro_cost(prompt_tokens, completion_tokens)
+                    input_cost = token_logger._calculate_input_cost(prompt_tokens)
+                    output_cost = token_logger._calculate_output_cost(completion_tokens)
+                except Exception as e:
+                    print(f"⚠️ Could not use TokenLogger, using simplified pricing: {e}")
+                    # Fallback to simplified pricing
+                    input_cost = (prompt_tokens / 1_000_000) * 1.25
+                    output_cost = (completion_tokens / 1_000_000) * 10.00
+                    total_cost_usd = input_cost + output_cost
+                
+                # Log cost metrics
+                mlflow.log_metrics({
+                    "cost_usd_total": total_cost_usd,
+                    "cost_usd_input": input_cost,
+                    "cost_usd_output": output_cost,
+                    "cost_per_1k_tokens_usd": (total_cost_usd / token_metadata.get("total_tokens", 1)) * 1000 if token_metadata.get("total_tokens", 0) > 0 else 0
+                })
+                
+                # Log cost breakdown as tags for easy filtering
+                mlflow.set_tag("cost_category", self._get_cost_category(total_cost_usd))
+                
+                print(f"   💰 Cost: ${total_cost_usd:.6f} USD (Input: ${input_cost:.6f}, Output: ${output_cost:.6f})")
+                if cached_tokens > 0:
+                    print(f"   💾 Cached tokens: {cached_tokens} (no additional cost)")
+                
+                # ====================================================================
+                # STEP 5: Log Artifacts
+                # Following: Artifacts section from best practices
+                # ====================================================================
+                # Try to log artifacts (may fail if server has permission issues)
+                try:
+                    # Log generated email as artifact
+                    mlflow.log_text(generated_content, "generated_email.txt")
+                    
+                    # Log input metadata
+                    input_metadata = {
+                        "relationship_audio": Path(relationship_audio_path).name,
+                        "message_audios": [Path(p).name for p in message_audio_paths],
+                        "recipient_name": recipient_name,
+                        "recipient_email": recipient_email,
+                        "contact_id": contact_id
+                    }
+                    mlflow.log_dict(input_metadata, "input_metadata.json")
+                    
+                    # Log token usage metadata
+                    mlflow.log_dict(token_metadata, "token_metadata.json")
+                    print(f"   📦 Artifacts logged successfully")
+                except PermissionError as pe:
+                    print(f"   ⚠️  Artifact logging skipped (server permission issue)")
+                    # Store metadata as tags instead (as fallback)
+                    mlflow.set_tag("token_total", token_metadata.get("total_tokens", 0))
+                    mlflow.set_tag("content_length", len(generated_content))
+                
+                # ====================================================================
+                # STEP 6: Set Success Status
+                # ====================================================================
+                mlflow.set_tag("status", "success")
+                
+                print(f"✅ MLflow tracking completed successfully")
+                print(f"   📊 Run ID: {run.info.run_id}")
+                print(f"   ⏱️  Duration: {total_duration:.2f}s")
+                print(f"   🎫 Total Tokens: {token_metadata.get('total_tokens', 0)}")
+                
+                # Return enhanced result with MLflow metadata
+                return {
+                    "content": generated_content,
+                    "token_metadata": token_metadata,
+                    "mlflow_run_id": run.info.run_id,
+                    "mlflow_experiment_id": run.info.experiment_id,
+                    "processing_times": {
+                        "total_seconds": total_duration
+                    }
+                }
+                
+            except Exception as e:
+                # Log error details
+                mlflow.log_param("error_type", type(e).__name__)
+                mlflow.log_param("error_message", str(e))
+                mlflow.set_tag("status", "failed")
+                
+                print(f"❌ Error in MLflow-tracked generation: {str(e)}")
+                
+                return {
+                    "content": f"Error generating email: {str(e)}",
+                    "token_metadata": {"error": True},
+                    "mlflow_run_id": run.info.run_id if run else None
+                }
+    
+    def register_as_mlflow_model(self):
+        """
+        Register the Gemini service as an MLflow model for deployment
+        Following: Model Registry for GenAI Models section
+        """
+        try:
+            class GeminiPyFuncModel(mlflow.pyfunc.PythonModel):
+                """
+                PyFunc wrapper for Gemini email generation
+                Following: Use of pyfunc wrapper from best practices
+                """
+                
+                def __init__(self, temperature=0.7, top_p=0.9):
+                    self.temperature = temperature
+                    self.top_p = top_p
+                
+                def predict(self, context, model_input):
+                    """
+                    Generate email from audio paths
+                    
+                    Args:
+                        model_input: Dict with keys:
+                            - relationship_audio_path
+                            - message_audio_paths
+                            - recipient_name (optional)
+                            - recipient_email (optional)
+                    
+                    Returns:
+                        Generated email content
+                    """
+                    # Initialize service inside predict to avoid pickling issues
+                    service = MLflowGeminiService()
+                    
+                    result = service.generate_email_from_audio_files_direct(
+                        relationship_audio_path=model_input["relationship_audio_path"],
+                        message_audio_paths=model_input["message_audio_paths"],
+                        recipient_name=model_input.get("recipient_name", ""),
+                        recipient_email=model_input.get("recipient_email", ""),
+                        relationship=model_input.get("relationship", "professional")
+                    )
+                    
+                    return result["content"]
+            
+            # Create model signature
+            input_schema = Schema([
+                ColSpec(DataType.string, "relationship_audio_path"),
+                ColSpec(DataType.string, "message_audio_paths"),  # JSON array as string
+                ColSpec(DataType.string, "recipient_name"),
+                ColSpec(DataType.string, "recipient_email")
+            ])
+            
+            output_schema = Schema([
+                ColSpec(DataType.string, "generated_email")
+            ])
+            
+            signature = ModelSignature(inputs=input_schema, outputs=output_schema)
+            
+            # Log and register the model
+            with mlflow.start_run(run_name="model_registration"):
+                model_info = mlflow.pyfunc.log_model(
+                    artifact_path="gemini_email_model",
+                    python_model=GeminiPyFuncModel(),
+                    registered_model_name="gemini_email_generator",
+                    signature=signature,
+                    input_example={
+                        "relationship_audio_path": "/path/to/relationship.webm",
+                        "message_audio_paths": "['/path/to/message1.webm']",
+                        "recipient_name": "John Doe",
+                        "recipient_email": "john@example.com"
+                    },
+                    metadata={
+                        "model_type": "gemini",
+                        "base_model": "gemini-2.5-pro",
+                        "task": "email_generation",
+                        "version": "1.0.0"
+                    }
+                )
+                
+                print(f"✅ Registered Gemini model in MLflow registry")
+                print(f"   📦 Model Name: gemini_email_generator")
+                print(f"   🔖 Model URI: {model_info.model_uri}")
+            
+            return model_info
+            
+        except Exception as e:
+            print(f"⚠️ Model registration failed: {str(e)}")
+            return None
+
+
+# ============================================================================
+# Evaluation Scorers
+# Following: Evaluation of GenAI Applications section
+# ============================================================================
+
+@scorer
+def email_length_check(outputs: Dict[str, Any]) -> Feedback:
+    """
+    Check if generated email has appropriate length
+    Following: Code-based Custom Scorers from best practices
+    """
+    content = outputs.get("content", "")
+    word_count = len(content.split())
+    
+    # Good email should be between 50-500 words
+    if 50 <= word_count <= 500:
+        score = 1.0
+        rationale = f"Email length is appropriate ({word_count} words)"
+    elif word_count < 50:
+        score = 0.5
+        rationale = f"Email is too short ({word_count} words)"
+    else:
+        score = 0.7
+        rationale = f"Email is quite long ({word_count} words)"
+    
+    return Feedback(
+        value=score,
+        rationale=rationale,
+        metadata={"word_count": word_count}
+    )
+
+
+@scorer
+def has_greeting_and_closing(outputs: Dict[str, Any]) -> bool:
+    """
+    Check if email has proper greeting and closing
+    Following: Custom Code-based Scorers
+    """
+    content = outputs.get("content", "").lower()
+    
+    greetings = ["dear", "hi", "hello", "hey"]
+    closings = ["regards", "sincerely", "best", "thanks", "thank you"]
+    
+    has_greeting = any(g in content for g in greetings)
+    has_closing = any(c in content for c in closings)
+    
+    return has_greeting and has_closing
+
+
+@scorer
+def token_efficiency(outputs: Dict[str, Any]) -> Feedback:
+    """
+    Evaluate token usage efficiency
+    Following: Custom Code-based Scorers with rationale
+    """
+    token_metadata = outputs.get("token_metadata", {})
+    content = outputs.get("content", "")
+    
+    total_tokens = token_metadata.get("total_tokens", 0)
+    
+    if total_tokens == 0:
+        return Feedback(
+            value=0,
+            rationale="No token usage data available"
+        )
+    
+    chars_per_token = len(content) / total_tokens
+    
+    # Good efficiency is around 3-5 chars per token
+    if 3 <= chars_per_token <= 5:
+        score = 1.0
+        rationale = "Excellent token efficiency"
+    elif chars_per_token < 3:
+        score = 0.6
+        rationale = "Token usage could be more efficient"
+    else:
+        score = 0.8
+        rationale = "Good token efficiency"
+    
+    return Feedback(
+        value=score,
+        rationale=rationale,
+        metadata={
+            "chars_per_token": chars_per_token,
+            "total_tokens": total_tokens
+        }
+    )
+
+
+# ============================================================================
+# Utility Functions
+# ============================================================================
+
+def evaluate_email_generation(
+    data: List[Dict],
+    predict_fn,
+    scorers: Optional[List] = None
+):
+    """
+    Evaluate email generation performance
+    Following: Evaluation API from best practices
+    
+    Args:
+        data: List of evaluation examples with inputs and expectations
+        predict_fn: Function that generates emails
+        scorers: List of scorer functions (optional)
+    
+    Returns:
+        Evaluation results
+    """
+    if scorers is None:
+        scorers = [
+            email_length_check,
+            has_greeting_and_closing,
+            token_efficiency
+        ]
+    
+    results = mlflow.genai.evaluate(
+        data=data,
+        predict_fn=predict_fn,
+        scorers=scorers
+    )
+    
+    return results
+
+
+def transition_model_to_production(model_name: str, version: int):
+    """
+    Promote model to production stage
+    Following: Model Registry section
+    """
+    from mlflow import MlflowClient
+    
+    client = MlflowClient()
+    client.transition_model_version_stage(
+        name=model_name,
+        version=version,
+        stage="Production"
+    )
+    
+    print(f"✅ Model {model_name} version {version} promoted to Production")
+

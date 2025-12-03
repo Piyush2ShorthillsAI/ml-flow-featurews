@@ -167,7 +167,7 @@ class PromptFetcher:
         
         # Construct URI
         
-        prompt_uri = f"prompts:/email_generation_prompt@champion"
+        prompt_uri = f"prompts:/comprehensive_technical_writer@local"
         print(f"📍 URI: {prompt_uri}")
         print(f"📝 Prompt Name: {prompt_name}")
         print(f"🏷️  Alias: {alias}")
@@ -279,12 +279,10 @@ def main():
     
     try:
         # Get prompt name from environment or use default
-        prompt_name = os.getenv("MLFLOW_PROMPT_NAME", "email_generation_prompt")
-        prompt_alias = os.getenv("MLFLOW_PROMPT_ALIAS", "champion")
-        
+       
         template_text, metadata = fetcher.fetch_prompt_by_alias(
-            prompt_name=prompt_name,
-            alias=prompt_alias
+            prompt_name="comprehensive_technical_writer",
+            alias="local"
         )
         
         print(f"\n✅ Successfully fetched prompt:")

@@ -1,0 +1,14 @@
+assessment_id: a-e8f32fe593f44c5f85df8d3171ce3ca7
+assessment_name: expected_response
+create_time: '2025-12-03T07:26:17.147Z'
+expectation:
+  value: Machine learning is a subset of AI that enables systems to learn from data
+last_update_time: '2025-12-03T07:26:17.147Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: c744516fbc99a0fd
+trace_id: tr-81e4486f48b5be85b04aaba19d2022b2
+valid: true

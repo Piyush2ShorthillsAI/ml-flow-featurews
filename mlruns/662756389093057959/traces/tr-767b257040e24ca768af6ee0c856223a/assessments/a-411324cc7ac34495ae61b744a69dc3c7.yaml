@@ -1,0 +1,16 @@
+assessment_id: a-411324cc7ac34495ae61b744a69dc3c7
+assessment_name: word_count_score
+create_time: '2025-12-03T07:26:17.850Z'
+feedback:
+  value: 0.0
+last_update_time: '2025-12-03T07:26:17.850Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  word_count: '637'
+rationale: 'Too long: 637 words (optimal: 30-100)'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 273438154c25b926
+trace_id: tr-767b257040e24ca768af6ee0c856223a
+valid: true

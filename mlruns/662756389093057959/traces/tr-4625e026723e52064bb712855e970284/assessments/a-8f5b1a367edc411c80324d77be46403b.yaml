@@ -1,0 +1,66 @@
+assessment_id: a-8f5b1a367edc411c80324d77be46403b
+assessment_name: correctness
+create_time: '2025-12-03T07:11:19.332Z'
+feedback:
+  error:
+    error_code: SCORER_ERROR
+    error_message: 'Failed to invoke the judge via litellm: litellm.AuthenticationError:
+      AuthenticationError: OpenAIException - The api_key client option must be set
+      either by passing api_key to the client or by setting the OPENAI_API_KEY environment
+      variable'
+    stack_trace: "Traceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/openai/openai.py\",
+      line 745, in completion\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/openai/openai.py\",
+      line 647, in completion\n    openai_client: OpenAI = self._get_openai_client(
+      \ # type: ignore\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/openai/openai.py\",
+      line 395, in _get_openai_client\n    _new_client = OpenAI(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/openai/_client.py\",
+      line 137, in __init__\n    raise OpenAIError(\nopenai.OpenAIError: The api_key
+      client option must be set either by passing api_key to the client or by setting
+      the OPENAI_API_KEY environment variable\n\nDuring handling of the above exception,
+      another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/main.py\",
+      line 2158, in completion\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/main.py\",
+      line 2130, in completion\n    response = openai_chat_completions.completion(\n
+      \ File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/openai/openai.py\",
+      line 756, in completion\n    raise OpenAIError(\nlitellm.llms.openai.common_utils.OpenAIError:
+      The api_key client option must be set either by passing api_key to the client
+      or by setting the OPENAI_API_KEY environment variable\n\nDuring handling of
+      the above exception, another exception occurred:\n\nTraceback (most recent call
+      last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/adapters/litellm_adapter.py\",
+      line 217, in _invoke_litellm_and_handle_tools\n    response = _invoke_litellm(\n
+      \ File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/adapters/litellm_adapter.py\",
+      line 141, in _invoke_litellm\n    return litellm.completion(**kwargs)\n  File
+      \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/utils.py\", line
+      1381, in wrapper\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/utils.py\",
+      line 1250, in wrapper\n    result = original_function(*args, **kwargs)\n  File
+      \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/main.py\", line
+      3772, in completion\n    raise exception_type(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\",
+      line 2328, in exception_type\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\",
+      line 449, in exception_type\n    raise AuthenticationError(\nlitellm.exceptions.AuthenticationError:
+      litellm.AuthenticationError: AuthenticationError: OpenAIException - The api_key
+      client option must be set either by passing api_key to the client or by setting
+      the OPENAI_API_KEY environment variable\n\nThe above exception was the direct
+      cause of the following exception:\n\nTraceback (most recent call last):\n  File
+      \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/evaluation/harness.py\",
+      line 210, in run_scorer\n    value = scorer_func(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 391, in run\n    result = self(**filtered)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/builtin_scorers.py\",
+      line 1343, in __call__\n    feedback = judges.is_correct(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/builtin.py\",
+      line 272, in is_correct\n    feedback = invoke_judge_model(model, prompt, assessment_name=assessment_name)\n
+      \ File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/telemetry/track.py\",
+      line 30, in wrapper\n    result = func(*args, **kwargs)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/utils/invocation_utils.py\",
+      line 164, in invoke_judge_model\n    response, total_cost = _invoke_litellm_and_handle_tools(\n
+      \ File \"/usr/lib/python3.10/contextlib.py\", line 79, in inner\n    return
+      func(*args, **kwds)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/adapters/litellm_adapter.py\",
+      line 265, in _invoke_litellm_and_handle_tools\n    raise MlflowException(f\"Failed
+      to invoke the judge via litellm: {e}\") from e\nmlflow.exceptions.MlflowException:
+      Failed to invoke the judge via litellm: litellm.AuthenticationError: AuthenticationError:
+      OpenAIException - The api_key client option must be set either by passing api_key
+      to the client or by setting the OPENAI_API_KEY environment variable\n"
+  value: null
+last_update_time: '2025-12-03T07:11:19.332Z'
+metadata:
+  mlflow.assessment.sourceRunId: e779d43d2f1f4c43885513408c660e7b
+source:
+  source_id: correctness
+  source_type: CODE
+span_id: 67143a9082a54672
+trace_id: tr-4625e026723e52064bb712855e970284
+valid: true

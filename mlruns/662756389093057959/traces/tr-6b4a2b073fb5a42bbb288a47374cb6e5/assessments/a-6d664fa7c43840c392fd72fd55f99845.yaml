@@ -1,0 +1,17 @@
+assessment_id: a-6d664fa7c43840c392fd72fd55f99845
+assessment_name: clarity_score
+create_time: '2025-12-03T07:19:43.534Z'
+feedback:
+  value: 0.9549019607843137
+last_update_time: '2025-12-03T07:19:43.534Z'
+metadata:
+  avg_sentence_length: '10.65'
+  mlflow.assessment.sourceRunId: 8ab08ec80c0f4765bc600fd8c098c9b9
+  sentence_count: '68'
+rationale: 'Average sentence length: 10.6 words'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 2c431f3cbaed391d
+trace_id: tr-6b4a2b073fb5a42bbb288a47374cb6e5
+valid: true

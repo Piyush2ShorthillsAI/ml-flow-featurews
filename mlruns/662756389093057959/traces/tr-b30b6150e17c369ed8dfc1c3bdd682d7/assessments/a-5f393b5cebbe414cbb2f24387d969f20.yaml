@@ -1,0 +1,15 @@
+assessment_id: a-5f393b5cebbe414cbb2f24387d969f20
+assessment_name: clarity_score
+create_time: '2025-12-03T07:08:10.972Z'
+feedback:
+  value: 0.75
+last_update_time: '2025-12-03T07:08:10.972Z'
+metadata:
+  mlflow.assessment.sourceRunId: 76b02856a24d4972b5a73a5cb76dc969
+rationale: 'Clarity factors: clear structure'
+source:
+  source_id: default
+  source_type: CODE
+span_id: f3bf4440b3c846ac
+trace_id: tr-b30b6150e17c369ed8dfc1c3bdd682d7
+valid: true

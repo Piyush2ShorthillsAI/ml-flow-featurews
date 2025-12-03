@@ -1,0 +1,23 @@
+assessment_id: a-608dda1c471a40a389316ccf2fb6e0f2
+assessment_name: response_completeness
+create_time: '2025-12-03T07:19:41.179Z'
+feedback:
+  error:
+    error_code: SCORER_ERROR
+    error_message: 'response_completeness() missing 1 required positional argument:
+      ''ground_truth'''
+    stack_trace: "Traceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/evaluation/harness.py\",
+      line 210, in run_scorer\n    value = scorer_func(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 391, in run\n    result = self(**filtered)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 1022, in __call__\n    return func(*args, **kwargs)\nTypeError: response_completeness()
+      missing 1 required positional argument: 'ground_truth'\n"
+  value: null
+last_update_time: '2025-12-03T07:19:41.179Z'
+metadata:
+  mlflow.assessment.sourceRunId: 8ab08ec80c0f4765bc600fd8c098c9b9
+source:
+  source_id: response_completeness
+  source_type: CODE
+span_id: 9ef3be27129b5674
+trace_id: tr-a044fba6d3e8f0210d30325aa4f5626c
+valid: true

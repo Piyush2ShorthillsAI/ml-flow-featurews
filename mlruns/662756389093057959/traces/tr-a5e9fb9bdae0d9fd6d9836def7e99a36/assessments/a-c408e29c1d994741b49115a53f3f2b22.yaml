@@ -1,0 +1,15 @@
+assessment_id: a-c408e29c1d994741b49115a53f3f2b22
+assessment_name: response_length_score
+create_time: '2025-12-03T07:05:38.476Z'
+feedback:
+  value: 0.7
+last_update_time: '2025-12-03T07:05:38.476Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+rationale: 'A bit long: 112 words'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 34948dfa1f20ca05
+trace_id: tr-a5e9fb9bdae0d9fd6d9836def7e99a36
+valid: true

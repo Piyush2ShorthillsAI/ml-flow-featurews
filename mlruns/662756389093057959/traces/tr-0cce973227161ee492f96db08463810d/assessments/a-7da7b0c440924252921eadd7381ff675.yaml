@@ -1,0 +1,14 @@
+assessment_id: a-7da7b0c440924252921eadd7381ff675
+assessment_name: no_error_messages
+create_time: '2025-12-03T07:26:19.829Z'
+feedback:
+  value: true
+last_update_time: '2025-12-03T07:26:19.829Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+source:
+  source_id: no_error_messages
+  source_type: CODE
+span_id: 6855227f611d5b6e
+trace_id: tr-0cce973227161ee492f96db08463810d
+valid: true

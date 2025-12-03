@@ -1,0 +1,22 @@
+execution_duration_ms: 9099
+request_preview: '{"model": "gemini-2.0-flash-001", "contents": "What is MLflow and
+  why is it useful for GenAI applications?"}'
+request_time: '2025-12-03T07:32:02.951Z'
+response_preview: '{"sdk_http_response": {"headers": {"content-type": "application/json;
+  charset=UTF-8", "vary": "Origin, X-Origin, Referer", "content-encoding": "gzip",
+  "date": "Wed, 03 Dec 2025 07:32:11 GMT", "server": "scaffolding on HTTPServer2",
+  "x-xss-protection": "0", "x-frame-options": "SAMEORIGIN", "x-content-type-options":
+  "nosniff", "server-timing": "gfet4t7; dur=8876", "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\";
+  ma=2592000", "transfer-encoding": "chunked"}, "body": null}, "candidates": [{"content":
+  {"parts": [{"video_metadata": null, "thought": null, "inline_data": null, "file_data":
+  null, "thought_signature": null, "function_call": null, "code_execution_result":
+  null, "executable_code": null, "function_response": null, "text": "## MLflow: An
+  Overview and its Relevance to GenAI Applications\n\nMLflow is an **open-source platform**
+  designed to manage the complete machine learning lifecycle, including experiment
+  tracking, model packaging, model deployment, and a central model registr...'
+state: OK
+trace_id: tr-87d8625a01b7be1575e62ac72f68f3ec
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

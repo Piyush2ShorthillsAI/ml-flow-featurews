@@ -1,0 +1,14 @@
+assessment_id: a-06f3f20c3e4548de8d3bcbf6113f7f1e
+assessment_name: expected_response
+create_time: '2025-12-03T07:26:17.867Z'
+expectation:
+  value: Model versioning helps track changes, enables rollback, and ensures reproducibility
+last_update_time: '2025-12-03T07:26:17.867Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: 273438154c25b926
+trace_id: tr-767b257040e24ca768af6ee0c856223a
+valid: true

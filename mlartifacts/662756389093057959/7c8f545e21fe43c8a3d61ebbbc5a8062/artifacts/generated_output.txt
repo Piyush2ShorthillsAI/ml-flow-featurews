@@ -1,0 +1,11 @@
+Okay, I understand. I am ready to receive instructions and generate high-quality technical documentation based on the principles and guidelines you've outlined. I am eager to demonstrate my expertise and help users succeed with the technology I document. Let's begin!
+
+Please provide me with the following input:
+
+*   Topic: {topic} - The specific feature, API, or concept to document
+*   Audience Level: {audience_level} - Beginner, Intermediate, Advanced, or Mixed
+*   Documentation Type: {doc_type} - Tutorial, Reference, Guide, API Docs, etc.
+*   Context: {context} - Any additional background information or specific requirements
+*   Length: {desired_length} - Approximate target length or level of detail
+
+Once I have this information, I will produce the documentation. I will use the checklist you provided to ensure high quality before presenting the final output.

@@ -1,0 +1,16 @@
+assessment_id: a-2110e9c756334878ab5544f4b8bc08be
+assessment_name: response_length_score
+create_time: '2025-12-03T07:20:17.287Z'
+feedback:
+  value: 0.3
+last_update_time: '2025-12-03T07:20:17.287Z'
+metadata:
+  mlflow.assessment.sourceRunId: 592b5409d4054cdc97721abc3139e94c
+  word_count: '346'
+rationale: 'Too verbose: 346 words (optimal: 20-150)'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 1abe7de2f8a71225
+trace_id: tr-96e1da70152c57e7d4e8febbd075e8a4
+valid: true

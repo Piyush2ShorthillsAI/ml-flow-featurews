@@ -1,0 +1,15 @@
+assessment_id: a-cd9fdd65035f40a69a942b19cf0ebfb5
+assessment_name: contains_key_concepts
+create_time: '2025-12-03T07:05:38.472Z'
+feedback:
+  value: 0.75
+last_update_time: '2025-12-03T07:05:38.472Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+rationale: 'Found 3/4 key concepts: [''versioning'', ''tracking'', ''reproducibility'']'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 8d0b60b86a8ce907
+trace_id: tr-81c34a6c10c075bc6e312f0f50fc3684
+valid: true

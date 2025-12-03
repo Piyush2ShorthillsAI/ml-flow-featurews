@@ -1,0 +1,11 @@
+digest: bf945191
+name: dataset
+profile: '{"num_rows": 2, "num_elements": 4}'
+schema: '{"mlflow_colspec": [{"type": "object", "properties": {"question": {"type":
+  "string", "required": true}}, "name": "inputs", "required": true}, {"type": "object",
+  "properties": {"expected_response": {"type": "string", "required": true}, "key_concepts":
+  {"type": "array", "items": {"type": "string"}, "required": true}}, "name": "expectations",
+  "required": true}]}'
+source: '{"tags": {"mlflow.user": "messagegeneration", "mlflow.source.name": "llm_judges.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "ab25874e9b6569774d5487d6298c638140e04f1f"}}'
+source_type: code

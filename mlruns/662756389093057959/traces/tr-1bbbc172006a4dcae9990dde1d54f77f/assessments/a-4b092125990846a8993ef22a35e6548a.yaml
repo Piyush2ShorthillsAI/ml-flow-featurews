@@ -1,0 +1,16 @@
+assessment_id: a-4b092125990846a8993ef22a35e6548a
+assessment_name: key_concepts
+create_time: '2025-12-03T07:08:10.994Z'
+expectation:
+  serialized_value:
+    serialization_format: JSON_FORMAT
+    value: '["open-source", "ML lifecycle", "tracking"]'
+last_update_time: '2025-12-03T07:08:10.994Z'
+metadata:
+  mlflow.assessment.sourceRunId: 76b02856a24d4972b5a73a5cb76dc969
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: c3851b27b2118608
+trace_id: tr-1bbbc172006a4dcae9990dde1d54f77f
+valid: true

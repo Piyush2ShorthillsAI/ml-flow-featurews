@@ -7,12 +7,15 @@ sys.path.append('..')
 
 import mlflow
 from config import Config
-from openai import OpenAI
+import google.generativeai as genai
 from utils import create_sample_qa_data, print_evaluation_results
 
 from mlflow.genai import scorer
 from mlflow.entities import Feedback
 import re
+
+# Enable Gemini tracing
+mlflow.gemini.autolog()
 
 
 def main():
@@ -23,12 +26,12 @@ def main():
     print("="*70 + "\n")
     
     # Validate and setup
-    if not Config.OPENAI_API_KEY:
-        print("⚠️  ERROR: OPENAI_API_KEY not set")
+    if not Config.GEMINI_API_KEY:
+        print("⚠️  ERROR: GEMINI_API_KEY not set")
         return
     
     Config.setup_mlflow()
-    client = OpenAI(api_key=Config.OPENAI_API_KEY)
+    genai.configure(api_key=Config.GEMINI_API_KEY)
     
     # ============================================================
     # 1. Simple Boolean Scorers
@@ -218,15 +221,15 @@ def main():
     
     @mlflow.trace
     def predict_fn(question: str) -> str:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that explains technical concepts clearly."},
-                {"role": "user", "content": question}
-            ],
-            temperature=0.7
+        model = genai.GenerativeModel('gemini-2.0-flash-001')
+        system_prompt = "You are a helpful assistant that explains technical concepts clearly."
+        full_prompt = f"{system_prompt}\n\n{question}"
+        
+        response = model.generate_content(
+            full_prompt,
+            generation_config=genai.types.GenerationConfig(temperature=0.7)
         )
-        return response.choices[0].message.content
+        return response.text
     
     eval_data = create_sample_qa_data()
     

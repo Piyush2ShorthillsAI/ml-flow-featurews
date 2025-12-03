@@ -1,0 +1,14 @@
+assessment_id: a-624ee89de2284b5e98e7991f7b3fe9e6
+assessment_name: expected_response
+create_time: '2025-12-03T07:08:19.819Z'
+expectation:
+  value: Prompt engineering is the practice of designing effective prompts for LLMs
+last_update_time: '2025-12-03T07:08:19.819Z'
+metadata:
+  mlflow.assessment.sourceRunId: 78cc2f0291b24577a1654eccd5959068
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: a4a6956ec2c5abca
+trace_id: tr-08ad4ba9cb8e4ecc6abfe8e5e32a1e12
+valid: true

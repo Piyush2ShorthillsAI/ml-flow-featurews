@@ -1,0 +1,40 @@
+artifact_path: mlflow-artifacts:/662756389093057959/models/m-fe1c0a217da44413b155c7f88b3a8f84/artifacts
+flavors:
+  python_function:
+    cloudpickle_version: 3.1.1
+    code: null
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pyfunc.model
+    python_model: python_model.pkl
+    python_version: 3.10.12
+    streamable: false
+is_signature_from_type_hint: false
+metadata:
+  context_window: 1M tokens
+  description: Gemini 2.0 Flash - Creative variant for imaginative and varied responses
+  max_tokens: '2048'
+  model_name: gemini-2.0-flash-001
+  provider: google-gemini
+  temperature: '1.0'
+  top_k: '50'
+  top_p: '0.95'
+  use_case: Creative writing, brainstorming, content generation
+  variant: creative
+mlflow_version: 3.6.0
+model_id: m-fe1c0a217da44413b155c7f88b3a8f84
+model_size_bytes: 2955
+model_uuid: m-fe1c0a217da44413b155c7f88b3a8f84
+prompts: null
+run_id: dffdb9ee99a84f4390dc2923d4418b60
+saved_input_example_info:
+  artifact_path: input_example.json
+  serving_input_path: serving_input_example.json
+  type: json_object
+signature:
+  inputs: '[{"type": "string", "name": "question", "required": true}]'
+  outputs: '[{"type": "string", "name": "response", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2025-12-03 07:12:02.976726'

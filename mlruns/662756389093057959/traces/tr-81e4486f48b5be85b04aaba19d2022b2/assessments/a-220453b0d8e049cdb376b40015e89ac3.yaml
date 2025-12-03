@@ -1,0 +1,15 @@
+assessment_id: a-220453b0d8e049cdb376b40015e89ac3
+assessment_name: has_examples
+create_time: '2025-12-03T07:26:17.130Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:17.130Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+rationale: Includes examples
+source:
+  source_id: default
+  source_type: CODE
+span_id: c744516fbc99a0fd
+trace_id: tr-81e4486f48b5be85b04aaba19d2022b2
+valid: true

@@ -1,0 +1,18 @@
+assessment_id: a-15ee8849b30b4a14bbb82631e23f243c
+assessment_name: expected_content
+create_time: '2025-12-03T07:11:13.837Z'
+feedback:
+  value: matches
+last_update_time: '2025-12-03T07:11:13.837Z'
+metadata:
+  mlflow.assessment.judgeCost: '0.00025059999999999997'
+  mlflow.assessment.sourceRunId: e779d43d2f1f4c43885513408c660e7b
+rationale: The output accurately and comprehensively defines and explains prompt engineering,
+  covering the key concepts of LLMs, prompts, design, and optimization, and providing
+  additional context and examples.
+source:
+  source_id: gemini:/gemini-2.0-flash-001
+  source_type: LLM_JUDGE
+span_id: 0fa726316e911486
+trace_id: tr-322a27be60c5cf2dfa448ea275f8682a
+valid: true

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/662756389093057959/65522867351e4bcb85cbc40e09efe474/artifacts
+deleted_time: 1764745597964
+end_time: 1764744000884
+entry_point_name: ''
+experiment_id: '662756389093057959'
+lifecycle_stage: deleted
+run_id: 65522867351e4bcb85cbc40e09efe474
+run_name: prompt_fetch_and_generate
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764744000176
+status: 3
+tags: []
+user_id: messagegeneration

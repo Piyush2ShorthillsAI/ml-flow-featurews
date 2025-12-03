@@ -1,0 +1,13 @@
+execution_duration_ms: 1208
+request_preview: '{"question": "Explain what is prompt engineering?"}'
+request_time: '2025-12-03T07:08:12.515Z'
+response_preview: '"Prompt engineering is the art and science of crafting effective
+  text prompts to guide AI models, particularly large language models (LLMs), to generate
+  desired outputs. It involves carefully designing the wording, structure, and content
+  of a prompt to elicit specific and high-quality responses from the AI.\n"'
+state: OK
+trace_id: tr-b60c3739602863abdeaa0b685af7237c
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

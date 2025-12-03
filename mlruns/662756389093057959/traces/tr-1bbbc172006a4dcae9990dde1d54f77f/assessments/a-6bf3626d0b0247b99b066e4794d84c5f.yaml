@@ -1,0 +1,14 @@
+assessment_id: a-6bf3626d0b0247b99b066e4794d84c5f
+assessment_name: expected_response
+create_time: '2025-12-03T07:08:10.988Z'
+expectation:
+  value: MLflow is an open-source platform for managing the machine learning lifecycle
+last_update_time: '2025-12-03T07:08:10.988Z'
+metadata:
+  mlflow.assessment.sourceRunId: 76b02856a24d4972b5a73a5cb76dc969
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: c3851b27b2118608
+trace_id: tr-1bbbc172006a4dcae9990dde1d54f77f
+valid: true

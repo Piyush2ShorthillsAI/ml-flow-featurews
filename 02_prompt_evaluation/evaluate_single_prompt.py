@@ -7,13 +7,16 @@ sys.path.append('..')
 
 import mlflow
 from config import Config
-from openai import OpenAI
+import google.generativeai as genai
 from utils import create_sample_qa_data, print_evaluation_results
 
 # Import scorers
 from mlflow.genai import scorer
 from mlflow.genai.scorers import Correctness, Guidelines
 from mlflow.entities import Feedback
+
+# Enable Gemini tracing
+mlflow.gemini.autolog()
 
 
 def main():
@@ -24,16 +27,16 @@ def main():
     print("="*70 + "\n")
     
     # Validate config
-    if not Config.OPENAI_API_KEY:
-        print("⚠️  ERROR: OPENAI_API_KEY not set in .env file")
-        print("Please set your OpenAI API key and try again")
+    if not Config.GEMINI_API_KEY:
+        print("⚠️  ERROR: GEMINI_API_KEY not set in .env file")
+        print("Please set your Gemini API key and try again")
         return
     
     # Setup MLflow
     Config.setup_mlflow()
     
-    # Setup OpenAI client
-    client = OpenAI(api_key=Config.OPENAI_API_KEY)
+    # Setup Gemini client
+    genai.configure(api_key=Config.GEMINI_API_KEY)
     
     # ============================================================
     # 1. Define Prediction Function with Prompt Registry
@@ -50,15 +53,34 @@ def main():
             prompt = mlflow.genai.load_prompt(f"prompts:/{prompt_name}@latest")
             formatted_messages = prompt.format(question=question)
             
-            # Call OpenAI
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=formatted_messages,
-                temperature=Config.DEFAULT_TEMPERATURE,
-                max_tokens=Config.DEFAULT_MAX_TOKENS
+            # Call Gemini
+            model = genai.GenerativeModel('gemini-2.0-flash-001')
+            
+            # Convert chat messages to Gemini format
+            if isinstance(formatted_messages, list):
+                # Extract system and user messages
+                system_msg = ""
+                user_msg = ""
+                for msg in formatted_messages:
+                    if msg.get("role") == "system":
+                        system_msg = msg.get("content", "")
+                    elif msg.get("role") == "user":
+                        user_msg = msg.get("content", "")
+                
+                # Combine for Gemini
+                full_prompt = f"{system_msg}\n\n{user_msg}" if system_msg else user_msg
+            else:
+                full_prompt = formatted_messages
+            
+            response = model.generate_content(
+                full_prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=Config.DEFAULT_TEMPERATURE,
+                    max_output_tokens=Config.DEFAULT_MAX_TOKENS
+                )
             )
             
-            return response.choices[0].message.content
+            return response.text
         except Exception as e:
             print(f"⚠️  Error: {e}")
             print(f"   Make sure to run ../01_prompt_registry/register_prompts.py first")
@@ -151,7 +173,7 @@ def main():
         # Log prompt info
         mlflow.log_param("prompt_name", prompt_name)
         mlflow.log_param("prompt_alias", "latest")
-        mlflow.log_param("model", "gpt-4o-mini")
+        mlflow.log_param("model", "gemini-2.0-flash-001")
         mlflow.log_param("temperature", Config.DEFAULT_TEMPERATURE)
         
         # Run evaluation

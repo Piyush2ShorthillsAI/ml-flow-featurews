@@ -1,0 +1,18 @@
+assessment_id: a-b980a75282114a61a057bb745386a656
+assessment_name: key_concepts_coverage
+create_time: '2025-12-03T07:26:16.935Z'
+feedback:
+  value: 0.75
+last_update_time: '2025-12-03T07:26:16.935Z'
+metadata:
+  found_concepts: '[''performance'', ''metrics'', ''improvement'']'
+  missing_concepts: '[''quality'']'
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  total_concepts: '4'
+rationale: 'Coverage: 3/4 concepts. Missing: [''quality'']'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 3de6e77a081f3941
+trace_id: tr-0fac4e598e5db0d396a2320fb8777e4e
+valid: true

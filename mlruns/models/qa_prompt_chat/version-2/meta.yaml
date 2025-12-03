@@ -1,0 +1,18 @@
+aliases: []
+creation_timestamp: 1764743488638
+current_stage: None
+deployment_job_state: null
+description: Improved prompt with more detailed instructions
+last_updated_timestamp: 1764743488638
+metrics: null
+model_id: ''
+name: qa_prompt_chat
+params: null
+run_id: ''
+run_link: ''
+source: dummy-source
+status: READY
+status_message: null
+storage_location: dummy-source
+user_id: null
+version: 2

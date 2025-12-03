@@ -1,0 +1,16 @@
+assessment_id: a-40b4f60fd60648448fba78b525a37c0b
+assessment_name: key_concepts
+create_time: '2025-12-03T07:08:11.029Z'
+expectation:
+  serialized_value:
+    serialization_format: JSON_FORMAT
+    value: '["performance", "metrics", "improvement", "quality"]'
+last_update_time: '2025-12-03T07:08:11.029Z'
+metadata:
+  mlflow.assessment.sourceRunId: 76b02856a24d4972b5a73a5cb76dc969
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: f3bf4440b3c846ac
+trace_id: tr-b30b6150e17c369ed8dfc1c3bdd682d7
+valid: true

@@ -1,0 +1,7 @@
+aliases: {}
+creation_timestamp: 1764743488553
+deployment_job_id: null
+deployment_job_state: null
+description: Initial version of simple Q&A prompt
+last_updated_timestamp: 1764743488571
+name: qa_prompt_simple

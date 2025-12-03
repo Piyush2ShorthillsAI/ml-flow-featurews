@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/662756389093057959/592b5409d4054cdc97721abc3139e94c/artifacts
+end_time: 1764746418025
+entry_point_name: ''
+experiment_id: '662756389093057959'
+lifecycle_stage: active
+run_id: 592b5409d4054cdc97721abc3139e94c
+run_name: evaluate_gemini_qa_model_v3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764746407291
+status: 3
+tags: []
+user_id: messagegeneration

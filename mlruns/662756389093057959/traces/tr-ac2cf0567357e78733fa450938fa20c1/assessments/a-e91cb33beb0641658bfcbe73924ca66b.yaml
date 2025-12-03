@@ -1,0 +1,14 @@
+assessment_id: a-e91cb33beb0641658bfcbe73924ca66b
+assessment_name: answer
+create_time: '2025-12-03T07:38:11.248Z'
+expectation:
+  value: AI is machine intelligence
+last_update_time: '2025-12-03T07:38:11.248Z'
+metadata:
+  mlflow.assessment.sourceRunId: d28f6d8705fd417eaa228af52057a95d
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: f2a8472195f70fc4
+trace_id: tr-ac2cf0567357e78733fa450938fa20c1
+valid: true

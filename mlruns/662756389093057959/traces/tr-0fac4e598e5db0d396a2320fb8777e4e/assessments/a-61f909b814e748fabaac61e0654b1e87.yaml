@@ -1,0 +1,16 @@
+assessment_id: a-61f909b814e748fabaac61e0654b1e87
+assessment_name: structured_response
+create_time: '2025-12-03T07:26:16.931Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:16.931Z'
+metadata:
+  features: '[''numbered list'', ''bullet points'', ''paragraphs'', ''sections'']'
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+rationale: 'Structure features: numbered list, bullet points, paragraphs, sections'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 3de6e77a081f3941
+trace_id: tr-0fac4e598e5db0d396a2320fb8777e4e
+valid: true

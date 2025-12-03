@@ -1,0 +1,18 @@
+assessment_id: a-df5abb45b04a4322a3427559f0adc575
+assessment_name: key_concepts_coverage
+create_time: '2025-12-03T07:26:17.141Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:17.141Z'
+metadata:
+  found_concepts: '[''AI'', ''data'', ''learning'', ''algorithms'']'
+  missing_concepts: '[]'
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  total_concepts: '4'
+rationale: 'Coverage: 4/4 concepts. Missing: []'
+source:
+  source_id: default
+  source_type: CODE
+span_id: c744516fbc99a0fd
+trace_id: tr-81e4486f48b5be85b04aaba19d2022b2
+valid: true

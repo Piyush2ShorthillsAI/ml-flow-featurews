@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/662756389093057959/d28f6d8705fd417eaa228af52057a95d/artifacts
+end_time: 1764747491805
+entry_point_name: ''
+experiment_id: '662756389093057959'
+lifecycle_stage: active
+run_id: d28f6d8705fd417eaa228af52057a95d
+run_name: e2e_pipeline
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764747488638
+status: 3
+tags: []
+user_id: messagegeneration

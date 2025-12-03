@@ -1,0 +1,21 @@
+execution_duration_ms: 1396
+request_preview: '{"message": "Now explain it for a 10-year-old."}'
+request_time: '2025-12-03T07:28:23.149Z'
+response_preview: '{"sdk_http_response": {"headers": {"content-type": "application/json;
+  charset=UTF-8", "vary": "Origin, X-Origin, Referer", "content-encoding": "gzip",
+  "date": "Wed, 03 Dec 2025 07:28:24 GMT", "server": "scaffolding on HTTPServer2",
+  "x-xss-protection": "0", "x-frame-options": "SAMEORIGIN", "x-content-type-options":
+  "nosniff", "server-timing": "gfet4t7; dur=1381", "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\";
+  ma=2592000", "transfer-encoding": "chunked"}, "body": null}, "candidates": [{"content":
+  {"parts": [{"video_metadata": null, "thought": null, "inline_data": null, "file_data":
+  null, "thought_signature": null, "function_call": null, "code_execution_result":
+  null, "executable_code": null, "function_response": null, "text": "Imagine teaching
+  a dog a trick. Instead of telling it exactly what to do, you show it examples and
+  give it treats when it does something right. Machine learning is like teaching a
+  computer the same way: you give it lots of examples, and it learns to do thin...'
+state: OK
+trace_id: tr-064ce8f90b4cdc7281a03edecebbfe8d
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

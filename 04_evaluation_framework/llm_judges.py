@@ -7,10 +7,13 @@ sys.path.append('..')
 
 import mlflow
 from config import Config
-from openai import OpenAI
+import google.generativeai as genai
 from utils import create_sample_qa_data
 from mlflow.genai.judges import make_judge
 from mlflow.genai.scorers import Guidelines, Correctness
+
+# Enable Gemini tracing
+mlflow.gemini.autolog()
 
 
 def main():
@@ -18,21 +21,19 @@ def main():
     print("LLM-as-a-Judge Scorers")
     print("="*70 + "\n")
     
-    if not Config.OPENAI_API_KEY:
-        print("⚠️  ERROR: OPENAI_API_KEY not set")
+    if not Config.GEMINI_API_KEY:
+        print("⚠️  ERROR: GEMINI_API_KEY not set")
         return
     
     Config.setup_mlflow()
-    client = OpenAI(api_key=Config.OPENAI_API_KEY)
+    genai.configure(api_key=Config.GEMINI_API_KEY)
     
     # Prediction function
     @mlflow.trace
     def predict_fn(question: str) -> str:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": question}]
-        )
-        return response.choices[0].message.content
+        model = genai.GenerativeModel('gemini-2.0-flash-001')
+        response = model.generate_content(question)
+        return response.text
     
     # LLM Judge Scorers
     print("Creating LLM judges...")
@@ -40,13 +41,13 @@ def main():
     quality_judge = make_judge(
         name="quality",
         instructions="Rate {{ outputs }} quality for {{ inputs }} as excellent/good/poor",
-        model="openai:/gpt-4o-mini"
+        model="gemini:/gemini-2.0-flash-001"
     )
     
     completeness_judge = make_judge(
         name="completeness",
         instructions="Is {{ outputs }} complete for {{ inputs }}? Rate: complete/partial/incomplete",
-        model="openai:/gpt-4o-mini"
+        model="gemini:/gemini-2.0-flash-001"
     )
     
     guidelines_scorer = Guidelines(

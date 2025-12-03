@@ -1,0 +1,16 @@
+assessment_id: a-ad0ea20c68c54db8acc06336475dc20a
+assessment_name: key_concepts
+create_time: '2025-12-03T07:08:14.048Z'
+expectation:
+  serialized_value:
+    serialization_format: JSON_FORMAT
+    value: '["AI", "data", "learning", "algorithms"]'
+last_update_time: '2025-12-03T07:08:14.048Z'
+metadata:
+  mlflow.assessment.sourceRunId: 90be1258d4b14511b2633e1901a4dd86
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: 18bfe60254a86bc0
+trace_id: tr-762a717b23f93d06bb2109b23f2a38da
+valid: true

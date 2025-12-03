@@ -1,0 +1,7 @@
+aliases: {}
+creation_timestamp: 1764743488714
+deployment_job_id: null
+deployment_job_state: null
+description: Chain-of-thought reasoning prompt
+last_updated_timestamp: 1764743488727
+name: cot_reasoning_prompt

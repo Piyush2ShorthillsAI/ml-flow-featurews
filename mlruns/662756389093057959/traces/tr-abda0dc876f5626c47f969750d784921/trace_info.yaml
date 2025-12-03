@@ -1,0 +1,19 @@
+execution_duration_ms: 7148
+request_preview: '{"question": "What is the difference between AI and ML?"}'
+request_time: '2025-12-03T07:19:34.081Z'
+response_preview: '"While the terms \"AI\" and \"ML\" are often used interchangeably,
+  they are not the same thing. Think of it like this:\n\n*   **AI (Artificial Intelligence)
+  is the broad concept:** It''s the overarching goal of creating machines that can
+  perform tasks that typically require human intelligence. These tasks can include
+  learning, problem-solving, decision-making, understanding language, and visual perception.\n\n*   **ML
+  (Machine Learning) is a specific subset of AI:** It''s one of the most common and
+  successful ways to achieve AI. Instead of explicitly programming a computer to perform
+  a task, machine learning algorithms allow computers to learn from data and improve
+  their performance over time without being explicitly programmed.\n\nHere''s a table
+  summarizing the key differences:\n\n| Feature           | AI (Artificial Intelligence)                                                                                                                                                            ...'
+state: OK
+trace_id: tr-abda0dc876f5626c47f969750d784921
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

@@ -1,6 +1,32 @@
-# MLflow Features Demonstration Project
+# MLflow GenAI Features - Production-Ready Demo
 
-A comprehensive demonstration of MLflow 3.x features for GenAI applications, including prompt management, model tracking, evaluation frameworks, and agent serving.
+A comprehensive, production-ready demonstration of MLflow GenAI features for building enterprise LLM applications with Gemini 2.0 Flash, including prompt management, model versioning, evaluation frameworks, and observability.
+
+---
+
+## 📚 **Documentation Hub**
+
+### 🚀 **Getting Started**
+- **[QUICKSTART.md](QUICKSTART.md)** - Get started in 15 minutes with hands-on examples
+- **[DOCUMENTATION.md](DOCUMENTATION.md)** - Comprehensive guide covering all features
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design, data flow, and technical details
+
+### 📖 **Feature-Specific Guides**
+- **[01_prompt_registry/README.md](01_prompt_registry/README.md)** - Prompt version control & management
+- **[03_model_registry/README.md](03_model_registry/README.md)** - Model lifecycle & deployment
+
+### 🎯 **Quick Navigation**
+| What do you want to do? | Go here |
+|--------------------------|---------|
+| **Get started quickly** | [QUICKSTART.md](QUICKSTART.md) |
+| **Understand the system** | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| **Learn all features** | [DOCUMENTATION.md](DOCUMENTATION.md) |
+| **Work with prompts** | [01_prompt_registry/](01_prompt_registry/) |
+| **Work with models** | [03_model_registry/](03_model_registry/) |
+| **Evaluate quality** | [04_evaluation_framework/](04_evaluation_framework/) |
+| **Troubleshoot issues** | [DOCUMENTATION.md#troubleshooting](DOCUMENTATION.md#troubleshooting) |
+
+---
 
 ## 🚀 Features Covered
 
@@ -17,14 +43,15 @@ This project demonstrates all major MLflow features:
 - Track evaluation metrics
 
 ### 3. **Model Registration & Versioning** ✨
-- Register Gemini 2.5 Pro models using PyFunc wrapper
-- 2M token context window support
-- Version models with hyperparameters
-- Track model metadata and lineage
+- Register Gemini 2.0 Flash-001 models using PyFunc wrapper
+- 1M token context window support
+- Version models with hyperparameters (3 variants: Balanced, Creative, Precise)
+- Track rich metadata (tags, metrics, parameters)
 - Comprehensive model evaluation (custom scorers + LLM judges)
 - Side-by-side model comparison
 - A/B testing framework for production
 - Performance monitoring and drift detection
+- Full lifecycle management (None → Staging → Production → Archived)
 
 ### 4. **Evaluation Framework**
 - Custom code-based scorers
@@ -65,15 +92,22 @@ This project demonstrates all major MLflow features:
 
 ```
 ml_flow_features/
+├── README.md                          # This file (project overview)
+├── QUICKSTART.md                      # 15-minute getting started guide 🚀
+├── DOCUMENTATION.md                   # Comprehensive documentation 📚
+├── ARCHITECTURE.md                    # System design & internals 🏗️
 ├── config.py                          # Configuration management
 ├── requirements.txt                   # Python dependencies
 ├── .env.example                       # Environment variables template
-├── README.md                          # This file
 │
 ├── 01_prompt_registry/                # Prompt management examples
+│   ├── README.md                      # Comprehensive prompt guide 📖
 │   ├── register_prompts.py            # Register and version prompts
-│   ├── load_prompts.py                # Load prompts with aliases
-│   └── prompt_lifecycle.py            # Manage prompt lifecycle
+│   ├── simple_fetch_by_alias.py       # Load prompts (production pattern)
+│   ├── fetch_prompt_from_ui.py        # Advanced fetching with debugging
+│   ├── advanced_prompt_usage.py       # Production workflow example
+│   ├── load_prompts.py                # Basic prompt loading
+│   └── prompt_lifecycle.py            # Lifecycle management
 │
 ├── 02_prompt_evaluation/              # Prompt evaluation examples
 │   ├── evaluate_single_prompt.py      # Evaluate one prompt
@@ -81,16 +115,13 @@ ml_flow_features/
 │   └── evaluate_with_judges.py        # Use LLM judges
 │
 ├── 03_model_registry/                 # Model registration & management ✨
-│   ├── register_gemini_model.py       # Register Gemini 2.5 Pro models
+│   ├── README.md                      # Comprehensive model guide 📖
+│   ├── register_gemini_model.py       # Register Gemini 2.0 Flash models
 │   ├── load_and_predict.py            # Load and use models
 │   ├── model_versioning.py            # Version & lifecycle management
-│   ├── evaluate_models.py             # Comprehensive evaluation 🆕
-│   ├── compare_models.py              # Side-by-side comparison 🆕
-│   ├── model_ab_testing.py            # A/B testing framework 🆕
-│   ├── model_performance_tracking.py  # Performance monitoring 🆕
-│   ├── run_all_model_examples.sh      # Run all model examples 🆕
-│   ├── README_MODEL_FEATURES.md       # Detailed documentation 🆕
-│   └── MODELS_SUMMARY.md              # Implementation summary 🆕
+│   ├── evaluate_models.py             # Comprehensive evaluation
+│   ├── compare_models.py              # Side-by-side comparison
+│   └── model_ab_testing.py            # A/B testing framework
 │
 ├── 04_evaluation_framework/           # Evaluation scorers and framework
 │   ├── custom_scorers.py              # Code-based custom scorers
@@ -142,13 +173,25 @@ cp .env.example .env
 
 Edit `.env` with your settings:
 ```bash
-# Required for model features
-GEMINI_API_KEY=your_gemini_api_key
+# Required - Gemini API Key
+GEMINI_API_KEY=your_gemini_api_key_here
 
-# Optional for other examples
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
+# Required - MLflow Configuration
+MLFLOW_TRACKING_URI=http://localhost:5000
+# OR for remote server:
+# MLFLOW_TRACKING_URI=https://mlflow.shorthills.ai
+# MLFLOW_TRACKING_USERNAME=your_username
+# MLFLOW_TRACKING_PASSWORD=your_password
+
+# Experiment Name
+MLFLOW_EXPERIMENT_NAME=gemini_qa_demo
+
+# Model Configuration
+GEMINI_MODEL=gemini-2.0-flash-001
+DEFAULT_TEMPERATURE=0.7
 ```
+
+**Get Gemini API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 ### 3. Start MLflow Server (Local)
 
@@ -165,112 +208,122 @@ mlflow ui
 
 Open your browser to: http://localhost:5000
 
-## 🎯 Model Features (NEW!) ✨
+## 🎯 Model Features ✨
 
-The project now includes **comprehensive model management features** for production-ready GenAI applications:
+The project includes **enterprise-grade model management** for production GenAI applications:
 
 ### What's Included
 
-1. **Model Registration**
-   - Gemini 2.5 Pro models with 2M token context
-   - Multiple configuration variants (balanced, creative, precise)
-   - PyFunc wrapper for custom models
-   - Cost-effective and powerful
+1. **Model Registration** (`register_gemini_model.py`)
+   - Gemini 2.0 Flash-001 with 1M token context
+   - 3 variants: Balanced (temp=0.7), Creative (temp=1.0), Precise (temp=0.2)
+   - PyFunc wrapper for portable models
+   - Rich metadata (9 metrics, 10+ tags per model)
 
-2. **Model Evaluation** 🎯
-   - Custom code-based scorers (4 types)
-   - LLM-as-a-judge evaluators (2 types)
-   - Ground truth comparison
+2. **Model Evaluation** 🎯 (`evaluate_models.py`)
+   - Custom code-based scorers
+   - LLM-as-a-judge evaluators
    - Multi-metric evaluation
+   - Ground truth comparison
 
-3. **Model Comparison** 📊
-   - Side-by-side version comparison
+3. **Model Comparison** 📊 (`compare_models.py`)
+   - Side-by-side version analysis
    - Quality and performance metrics
-   - Aggregate statistics
+   - Recommendation engine
 
-4. **A/B Testing** 🔬
+4. **A/B Testing** 🔬 (`model_ab_testing.py`)
    - Production-ready framework
-   - User segment analysis
    - Statistical significance testing
+   - Traffic splitting (50/50)
    - Deployment recommendations
 
-5. **Performance Monitoring** 📈
+5. **Performance Monitoring** 📈 (`model_performance_tracking.py`)
    - Time-series metrics tracking
    - Drift detection
    - Automated alerting
    - Performance reports
 
-6. **Lifecycle Management** 🔄
-   - Version control
+6. **Lifecycle Management** 🔄 (`model_versioning.py`)
    - Stage transitions (None → Staging → Production → Archived)
-   - Tagging and search
+   - Version control
    - Rollback support
 
-### Run All Model Examples
+### Quick Start with Models
 
 ```bash
+# 1. Register models (creates 3 variants)
 cd 03_model_registry
-bash run_all_model_examples.sh
+python3 register_gemini_model.py
+
+# 2. Load and predict
+python3 load_and_predict.py
+
+# 3. Evaluate and compare
+python3 evaluate_models.py
+python3 compare_models.py
 ```
 
-This comprehensive demo (~10-15 minutes) showcases:
-- ✅ Gemini 2.5 Pro model registration
-- ✅ Comprehensive evaluation with 6 scorers
-- ✅ Version comparison across diverse scenarios
-- ✅ A/B testing with deployment recommendations
-- ✅ 7-day performance tracking with drift detection
-- ✅ Complete lifecycle management
-
-**See:** [`03_model_registry/README_MODEL_FEATURES.md`](03_model_registry/README_MODEL_FEATURES.md) for detailed documentation.
+**📖 Detailed Guide**: [`03_model_registry/README.md`](03_model_registry/README.md)
 
 ---
 
 ## 🎯 Quick Start Examples
 
-### Example 1: Register and Evaluate a Prompt
+### Complete Workflow (15 minutes)
 
-```python
-from config import Config
-import mlflow
+**Step 1: Prompt Management** (5 min)
+```bash
+cd 01_prompt_registry
 
-# Setup
-Config.setup_mlflow()
+# Register prompts with versions and aliases
+python3 register_prompts.py
 
-# Run prompt registry example
-python 01_prompt_registry/register_prompts.py
-
-# Run evaluation
-python 02_prompt_evaluation/evaluate_single_prompt.py
+# Load and use prompts
+python3 simple_fetch_by_alias.py
 ```
 
-### Example 2: Register and Serve a Gemini Model
+**Step 2: Model Management** (5 min)
+```bash
+cd ../03_model_registry
 
-```python
-# Register Gemini 2.5 Pro model
-python 03_model_registry/register_gemini_model.py
+# Register 3 Gemini model variants
+python3 register_gemini_model.py
 
-# Load and predict
-python 03_model_registry/load_and_predict.py
+# Load and make predictions
+python3 load_and_predict.py
 ```
 
-### Example 3: Create and Use Evaluation Datasets
+**Step 3: Evaluation** (5 min)
+```bash
+# Compare model versions
+python3 compare_models.py
 
-```python
-# Create dataset from traces
-python 06_evaluation_datasets/create_from_traces.py
-
-# Evaluate using dataset
-python 06_evaluation_datasets/dataset_evaluation.py
+# View results in MLflow UI
+# Navigate to: http://localhost:5000
 ```
 
-### Example 4: Build a ResponsesAgent
+### Individual Feature Examples
 
-```python
-# Simple conversational agent
-python 07_responses_agent/simple_agent.py
+```bash
+# Prompt Registry
+python3 01_prompt_registry/register_prompts.py
+python3 01_prompt_registry/advanced_prompt_usage.py
 
-# Tool-calling agent
-python 07_responses_agent/tool_calling_agent.py
+# Prompt Evaluation
+python3 02_prompt_evaluation/compare_prompts.py
+python3 02_prompt_evaluation/evaluate_with_judges.py
+
+# Model Evaluation
+python3 03_model_registry/evaluate_models.py
+python3 03_model_registry/model_ab_testing.py
+
+# Custom Scorers
+python3 04_evaluation_framework/custom_scorers.py
+python3 04_evaluation_framework/llm_judges.py
+
+# Tracing
+python3 05_tracing/gemini_tracing.py
+python3 05_tracing/custom_tracing.py
 ```
 
 ## 📊 Key MLflow Concepts
@@ -331,12 +384,32 @@ python 02_prompt_evaluation/evaluate_single_prompt.py
 python 05_tracing/openai_tracing.py
 ```
 
-## 📖 Additional Resources
+## 📖 Documentation & Resources
+
+### 📚 Project Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[QUICKSTART.md](QUICKSTART.md)** | 15-minute hands-on tutorial |
+| **[DOCUMENTATION.md](DOCUMENTATION.md)** | Comprehensive feature guide with use cases |
+| **[ARCHITECTURE.md](ARCHITECTURE.md)** | System design, data flow, and internals |
+| **[01_prompt_registry/README.md](01_prompt_registry/README.md)** | Prompt management deep dive |
+| **[03_model_registry/README.md](03_model_registry/README.md)** | Model lifecycle management guide |
+
+### 🔗 External Resources
 
 - [MLflow Documentation](https://mlflow.org/docs/latest/index.html)
-- [MLflow GenAI Guide](https://mlflow.org/docs/latest/llms/index.html)
+- [MLflow GenAI Guide](https://mlflow.org/docs/latest/llms/genai/index.html)
+- [Gemini API Documentation](https://ai.google.dev/docs)
 - [MLflow Prompt Engineering](https://mlflow.org/docs/latest/llms/prompt-engineering/index.html)
 - [MLflow Evaluation](https://mlflow.org/docs/latest/llms/llm-evaluate/index.html)
+
+### 🆘 Getting Help
+
+1. **Quick Issues**: Check [QUICKSTART.md - Troubleshooting](QUICKSTART.md#common-issues--solutions)
+2. **Technical Details**: See [ARCHITECTURE.md](ARCHITECTURE.md)
+3. **Use Cases**: See [DOCUMENTATION.md - Use Cases](DOCUMENTATION.md#use-cases)
+4. **Feature Questions**: Check feature-specific READMEs in each directory
 
 ## 🤝 Contributing
 
@@ -352,5 +425,56 @@ For issues or questions about MLflow features, please refer to the official MLfl
 
 ---
 
-**Built with MLflow 3.4+** | Showcasing the power of MLflow for GenAI applications
+## 🎓 Learning Path
+
+### Beginner (Week 1)
+1. Read [QUICKSTART.md](QUICKSTART.md)
+2. Complete the 15-minute hands-on tutorial
+3. Explore MLflow UI
+4. Run individual examples
+
+### Intermediate (Week 2)
+1. Read [DOCUMENTATION.md](DOCUMENTATION.md)
+2. Study [01_prompt_registry/README.md](01_prompt_registry/README.md)
+3. Study [03_model_registry/README.md](03_model_registry/README.md)
+4. Build custom evaluators
+
+### Advanced (Week 3-4)
+1. Read [ARCHITECTURE.md](ARCHITECTURE.md)
+2. Implement A/B testing
+3. Set up monitoring
+4. Deploy to production
+5. Integrate with CI/CD
+
+---
+
+## 🏆 Key Features
+
+### ✅ Production-Ready
+- Enterprise-grade model management
+- Full lifecycle support
+- Rollback capabilities
+- Performance monitoring
+
+### ✅ Well-Documented
+- 3 comprehensive guides (QUICKSTART, DOCUMENTATION, ARCHITECTURE)
+- Feature-specific READMEs
+- Code walkthroughs
+- Troubleshooting sections
+
+### ✅ Complete Examples
+- 25+ Python scripts
+- 6 feature categories
+- Real-world use cases
+- Best practices included
+
+### ✅ Gemini 2.0 Flash
+- 1M token context window
+- Fast inference (320-520ms)
+- Cost-effective ($0.075/1M tokens)
+- 3 pre-configured variants
+
+---
+
+**Built with MLflow 2.x & Gemini 2.0 Flash** | Production-ready MLOps for GenAI applications 🚀
 

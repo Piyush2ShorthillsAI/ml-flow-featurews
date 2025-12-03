@@ -1,0 +1,18 @@
+assessment_id: a-fc0966df3dc44af8ae3acfcd36eb4962
+assessment_name: quality
+create_time: '2025-12-03T07:26:58.963Z'
+feedback:
+  value: excellent
+last_update_time: '2025-12-03T07:26:58.963Z'
+metadata:
+  mlflow.assessment.judgeCost: '0.0001626'
+  mlflow.assessment.sourceRunId: 22564191272d434e92eaadf046324c12
+rationale: The explanation is very thorough and contains all the key information regarding
+  what Machine Learning is, how it works, the types of ML and applications of ML.
+  This is an excellent answer.
+source:
+  source_id: gemini:/gemini-2.0-flash-001
+  source_type: LLM_JUDGE
+span_id: c8c6095e2c6ebfab
+trace_id: tr-096a6bfded13e304792639520c443101
+valid: true

@@ -1,0 +1,21 @@
+execution_duration_ms: 1065
+request_preview: '{"message": "Explain machine learning in one sentence."}'
+request_time: '2025-12-03T07:29:56.835Z'
+response_preview: '{"sdk_http_response": {"headers": {"content-type": "application/json;
+  charset=UTF-8", "vary": "Origin, X-Origin, Referer", "content-encoding": "gzip",
+  "date": "Wed, 03 Dec 2025 07:29:57 GMT", "server": "scaffolding on HTTPServer2",
+  "x-xss-protection": "0", "x-frame-options": "SAMEORIGIN", "x-content-type-options":
+  "nosniff", "server-timing": "gfet4t7; dur=1025", "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\";
+  ma=2592000", "transfer-encoding": "chunked"}, "body": null}, "candidates": [{"content":
+  {"parts": [{"video_metadata": null, "thought": null, "inline_data": null, "file_data":
+  null, "thought_signature": null, "function_call": null, "code_execution_result":
+  null, "executable_code": null, "function_response": null, "text": "Machine learning
+  is a technique that allows computers to learn from data without explicit programming,
+  enabling them to make predictions or decisions.\n"}], "role": "model"}, "citation_metadata":
+  null, "finish_message": null, "token_count": null, "finish_re...'
+state: OK
+trace_id: tr-639f6aa874ec6c9363c6d09389c701e6
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

@@ -7,13 +7,16 @@ sys.path.append('..')
 
 import mlflow
 from config import Config
-from openai import OpenAI
+import google.generativeai as genai
 from utils import create_sample_qa_data, compare_results
 
 # Import scorers
 from mlflow.genai import scorer
 from mlflow.genai.scorers import Correctness, Guidelines
 from mlflow.entities import Feedback
+
+# Enable Gemini tracing
+mlflow.gemini.autolog()
 
 
 def main():
@@ -24,13 +27,13 @@ def main():
     print("="*70 + "\n")
     
     # Validate config
-    if not Config.OPENAI_API_KEY:
-        print("⚠️  ERROR: OPENAI_API_KEY not set")
+    if not Config.GEMINI_API_KEY:
+        print("⚠️  ERROR: GEMINI_API_KEY not set")
         return
     
     # Setup
     Config.setup_mlflow()
-    client = OpenAI(api_key=Config.OPENAI_API_KEY)
+    genai.configure(api_key=Config.GEMINI_API_KEY)
     
     # ============================================================
     # 1. Create Prediction Functions for Different Prompts
@@ -45,13 +48,31 @@ def main():
                 prompt = mlflow.genai.load_prompt(f"prompts:/{prompt_identifier}")
                 formatted = prompt.format(question=question)
                 
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=formatted,
-                    temperature=0.7,
-                    max_tokens=150
+                # Call Gemini
+                model = genai.GenerativeModel('gemini-2.0-flash-001')
+                
+                # Convert chat messages to Gemini format
+                if isinstance(formatted, list):
+                    system_msg = ""
+                    user_msg = ""
+                    for msg in formatted:
+                        if msg.get("role") == "system":
+                            system_msg = msg.get("content", "")
+                        elif msg.get("role") == "user":
+                            user_msg = msg.get("content", "")
+                    
+                    full_prompt = f"{system_msg}\n\n{user_msg}" if system_msg else user_msg
+                else:
+                    full_prompt = formatted
+                
+                response = model.generate_content(
+                    full_prompt,
+                    generation_config=genai.types.GenerationConfig(
+                        temperature=0.7,
+                        max_output_tokens=150
+                    )
                 )
-                return response.choices[0].message.content
+                return response.text
             except Exception as e:
                 return f"Error: {e}"
         

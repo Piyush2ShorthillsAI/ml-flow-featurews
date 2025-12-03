@@ -1,0 +1,18 @@
+assessment_id: a-2df7c17f9816445bb290c8706653d725
+assessment_name: completeness
+create_time: '2025-12-03T07:26:58.959Z'
+feedback:
+  value: complete
+last_update_time: '2025-12-03T07:26:58.959Z'
+metadata:
+  mlflow.assessment.judgeCost: '0.00016199999999999998'
+  mlflow.assessment.sourceRunId: 22564191272d434e92eaadf046324c12
+rationale: The response completely answers the question, providing a comprehensive
+  explanation of machine learning, including key concepts, how it works, types of
+  machine learning, applications, and a summary.
+source:
+  source_id: gemini:/gemini-2.0-flash-001
+  source_type: LLM_JUDGE
+span_id: c8c6095e2c6ebfab
+trace_id: tr-096a6bfded13e304792639520c443101
+valid: true

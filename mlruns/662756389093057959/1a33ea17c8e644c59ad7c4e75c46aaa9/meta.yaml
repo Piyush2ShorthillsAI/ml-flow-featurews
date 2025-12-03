@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/662756389093057959/1a33ea17c8e644c59ad7c4e75c46aaa9/artifacts
+end_time: 1764746208116
+entry_point_name: ''
+experiment_id: '662756389093057959'
+lifecycle_stage: active
+run_id: 1a33ea17c8e644c59ad7c4e75c46aaa9
+run_name: model_comparison
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764746208047
+status: 3
+tags: []
+user_id: messagegeneration

@@ -1,0 +1,14 @@
+execution_duration_ms: 1443
+request_preview: '{"question": "What is machine learning?"}'
+request_time: '2025-12-03T07:08:12.514Z'
+response_preview: '"Machine learning is a field of artificial intelligence (AI) that
+  focuses on enabling computer systems to learn from data without being explicitly
+  programmed. Instead of relying on pre-defined rules, machine learning algorithms
+  identify patterns, make predictions, and improve their performance over time as
+  they are exposed to more data.\n"'
+state: OK
+trace_id: tr-762a717b23f93d06bb2109b23f2a38da
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

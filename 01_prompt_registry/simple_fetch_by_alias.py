@@ -32,7 +32,7 @@ def main():
     
     # Get alias from environment (or use default)
     prompt_alias = os.getenv("MLFLOW_PROMPT_ALIAS", "champion")
-    prompt_name = os.getenv("MLFLOW_PROMPT_NAME", "email_generation_prompt")
+    prompt_name = os.getenv("MLFLOW_PROMPT_NAME", "qa_prompt_chat")
     
     # Construct URI with alias
     prompt_uri = f"prompts:/{prompt_name}@{prompt_alias}"

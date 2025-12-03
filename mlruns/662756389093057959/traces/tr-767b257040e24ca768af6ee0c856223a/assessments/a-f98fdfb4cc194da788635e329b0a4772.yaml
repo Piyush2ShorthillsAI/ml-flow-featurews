@@ -1,0 +1,16 @@
+assessment_id: a-f98fdfb4cc194da788635e329b0a4772
+assessment_name: technical_terms_present
+create_time: '2025-12-03T07:26:17.818Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:17.818Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  terms_found: '[''algorithm'', ''data'', ''model'', ''learning'', ''training'', ''prediction'']'
+rationale: 'Found 6 technical terms: algorithm, data, model, learning, training'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 273438154c25b926
+trace_id: tr-767b257040e24ca768af6ee0c856223a
+valid: true

@@ -103,7 +103,7 @@ def main():
     
     mlflow.genai.set_prompt_alias(
         name=prompt_name,
-        alias="latest",
+        alias="latest1",
         version=prompt_v2.version
     )
     

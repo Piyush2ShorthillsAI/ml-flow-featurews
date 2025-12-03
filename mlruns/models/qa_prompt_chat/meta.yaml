@@ -1,0 +1,10 @@
+aliases:
+  baseline: '1'
+  challenger: '2'
+  champion: '2'
+creation_timestamp: 1764743488599
+deployment_job_id: null
+deployment_job_state: null
+description: Chat-style Q&A prompt
+last_updated_timestamp: 1764743488815
+name: qa_prompt_chat

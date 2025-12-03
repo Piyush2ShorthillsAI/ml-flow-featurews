@@ -1,0 +1,16 @@
+assessment_id: a-df17c534f9be4aa39c0fa989ac0d8cb6
+assessment_name: response_length_score
+create_time: '2025-12-03T07:19:41.948Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:19:41.948Z'
+metadata:
+  mlflow.assessment.sourceRunId: 8ab08ec80c0f4765bc600fd8c098c9b9
+  word_count: '125'
+rationale: 'Optimal length: 125 words'
+source:
+  source_id: default
+  source_type: CODE
+span_id: bbafd0e81017475d
+trace_id: tr-abda0dc876f5626c47f969750d784921
+valid: true

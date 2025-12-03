@@ -1,0 +1,14 @@
+assessment_id: a-455f0955b21a4543ad79cb14d448e63e
+assessment_name: expected_response
+create_time: '2025-12-03T07:08:11.021Z'
+expectation:
+  value: Evaluation helps measure model performance and guide improvements
+last_update_time: '2025-12-03T07:08:11.021Z'
+metadata:
+  mlflow.assessment.sourceRunId: 76b02856a24d4972b5a73a5cb76dc969
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: f3bf4440b3c846ac
+trace_id: tr-b30b6150e17c369ed8dfc1c3bdd682d7
+valid: true

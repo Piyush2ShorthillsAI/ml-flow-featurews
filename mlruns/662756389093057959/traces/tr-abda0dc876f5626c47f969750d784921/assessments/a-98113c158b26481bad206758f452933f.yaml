@@ -1,0 +1,70 @@
+assessment_id: a-98113c158b26481bad206758f452933f
+assessment_name: helpfulness
+create_time: '2025-12-03T07:19:41.978Z'
+feedback:
+  error:
+    error_code: SCORER_ERROR
+    error_message: "Failed to invoke the judge via litellm: litellm.NotFoundError:
+      GeminiException - {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash
+      is not found for API version v1beta, or is not supported for generateContent.
+      Call ListModels to see the list of available models and their supported methods.\",\n
+      \   \"status\": \"NOT_FOUND\"\n  }\n}\n"
+    stack_trace: "Traceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/vertex_ai/gemini/vertex_and_google_ai_studio_gemini.py\",
+      line 2246, in completion\n    response = client.post(url=url, headers=headers,
+      json=data, logging_obj=logging_obj)  # type: ignore\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/custom_httpx/http_handler.py\",
+      line 898, in post\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/custom_httpx/http_handler.py\",
+      line 880, in post\n    response.raise_for_status()\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/httpx/_models.py\",
+      line 829, in raise_for_status\n    raise HTTPStatusError(message, request=request,
+      response=self)\nhttpx.HTTPStatusError: Client error '404 Not Found' for url
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyB1pTbUq9wkouJrgHX82GiE6d9LF-9p0Ws'\nFor
+      more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404\n\nDuring
+      handling of the above exception, another exception occurred:\n\nTraceback (most
+      recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/main.py\",
+      line 2873, in completion\n    response = vertex_chat_completion.completion(
+      \ # type: ignore\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/llms/vertex_ai/gemini/vertex_and_google_ai_studio_gemini.py\",
+      line 2250, in completion\n    raise VertexAIError(\nlitellm.llms.vertex_ai.common_utils.VertexAIError:
+      {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash
+      is not found for API version v1beta, or is not supported for generateContent.
+      Call ListModels to see the list of available models and their supported methods.\",\n
+      \   \"status\": \"NOT_FOUND\"\n  }\n}\n\n\nDuring handling of the above exception,
+      another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/adapters/litellm_adapter.py\",
+      line 217, in _invoke_litellm_and_handle_tools\n    response = _invoke_litellm(\n
+      \ File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/adapters/litellm_adapter.py\",
+      line 141, in _invoke_litellm\n    return litellm.completion(**kwargs)\n  File
+      \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/utils.py\", line
+      1381, in wrapper\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/utils.py\",
+      line 1250, in wrapper\n    result = original_function(*args, **kwargs)\n  File
+      \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/main.py\", line
+      3772, in completion\n    raise exception_type(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\",
+      line 2328, in exception_type\n    raise e\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py\",
+      line 1383, in exception_type\n    raise NotFoundError(\nlitellm.exceptions.NotFoundError:
+      litellm.NotFoundError: GeminiException - {\n  \"error\": {\n    \"code\": 404,\n
+      \   \"message\": \"models/gemini-1.5-flash is not found for API version v1beta,
+      or is not supported for generateContent. Call ListModels to see the list of
+      available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n
+      \ }\n}\n\n\nThe above exception was the direct cause of the following exception:\n\nTraceback
+      (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/evaluation/harness.py\",
+      line 210, in run_scorer\n    value = scorer_func(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 391, in run\n    result = self(**filtered)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/instructions_judge/__init__.py\",
+      line 443, in __call__\n    return invoke_judge_model(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/telemetry/track.py\",
+      line 30, in wrapper\n    result = func(*args, **kwargs)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/utils/invocation_utils.py\",
+      line 164, in invoke_judge_model\n    response, total_cost = _invoke_litellm_and_handle_tools(\n
+      \ File \"/usr/lib/python3.10/contextlib.py\", line 79, in inner\n    return
+      func(*args, **kwds)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/judges/adapters/litellm_adapter.py\",
+      line 265, in _invoke_litellm_and_handle_tools\n    raise MlflowException(f\"Failed
+      to invoke the judge via litellm: {e}\") from e\nmlflow.exceptions.MlflowException:
+      Failed to invoke the judge via litellm: litellm.NotFoundError: GeminiException
+      - {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash
+      is not found for API version v1beta, or is not supported for generateContent.
+      Call ListModels to see the list of available models and their supported methods.\",\n
+      \   \"status\": \"NOT_FOUND\"\n  }\n}\n\n"
+  value: null
+last_update_time: '2025-12-03T07:19:41.978Z'
+metadata:
+  mlflow.assessment.sourceRunId: 8ab08ec80c0f4765bc600fd8c098c9b9
+source:
+  source_id: helpfulness
+  source_type: CODE
+span_id: bbafd0e81017475d
+trace_id: tr-abda0dc876f5626c47f969750d784921
+valid: true

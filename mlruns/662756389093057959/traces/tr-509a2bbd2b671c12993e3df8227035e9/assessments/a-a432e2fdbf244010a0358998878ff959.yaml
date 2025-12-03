@@ -1,0 +1,15 @@
+assessment_id: a-a432e2fdbf244010a0358998878ff959
+assessment_name: contains_key_concepts
+create_time: '2025-12-03T07:05:38.492Z'
+feedback:
+  value: 0.25
+last_update_time: '2025-12-03T07:05:38.492Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+rationale: 'Found 1/4 key concepts: [''performance'']'
+source:
+  source_id: default
+  source_type: CODE
+span_id: c7e179a20e89a86b
+trace_id: tr-509a2bbd2b671c12993e3df8227035e9
+valid: true

@@ -1,0 +1,16 @@
+assessment_id: a-b63b535b58ba45f482be3974a84ea01d
+assessment_name: key_concepts
+create_time: '2025-12-03T07:05:38.545Z'
+expectation:
+  serialized_value:
+    serialization_format: JSON_FORMAT
+    value: '["LLM", "prompts", "design", "optimization"]'
+last_update_time: '2025-12-03T07:05:38.545Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: b8ef19c1680849a8
+trace_id: tr-e5585a63d9eb29c01f07e9cb72d6e38c
+valid: true

@@ -1,0 +1,14 @@
+assessment_id: a-72c893e2522544a381d0954ce3ccdc6c
+assessment_name: is_reasonable_length
+create_time: '2025-12-03T07:26:17.124Z'
+feedback:
+  value: false
+last_update_time: '2025-12-03T07:26:17.124Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+source:
+  source_id: is_reasonable_length
+  source_type: CODE
+span_id: 17bba9659183cc60
+trace_id: tr-9cc228069bcc4fb470b94b45743e89db
+valid: true

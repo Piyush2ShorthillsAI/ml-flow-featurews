@@ -1,0 +1,15 @@
+assessment_id: a-6689cb0622d94386a5800fde8e6fc5d0
+assessment_name: contains_key_concepts
+create_time: '2025-12-03T07:05:38.443Z'
+feedback:
+  value: 0.6666666666666666
+last_update_time: '2025-12-03T07:05:38.443Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+rationale: 'Found 2/3 key concepts: [''open-source'', ''tracking'']'
+source:
+  source_id: default
+  source_type: CODE
+span_id: d0e753d954680b64
+trace_id: tr-847a6fcece7d84743e9ae6e9be8a609a
+valid: true

@@ -1,0 +1,10 @@
+aliases:
+  latest1: '6'
+  production: '6'
+  staging: '6'
+creation_timestamp: 1764744959196
+deployment_job_id: null
+deployment_job_state: null
+description: Initial customer support prompt
+last_updated_timestamp: 1764745151896
+name: customer_support_prompt

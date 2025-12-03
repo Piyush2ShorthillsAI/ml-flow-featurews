@@ -1,0 +1,16 @@
+assessment_id: a-841c43382894452383d32e88b55aad28
+assessment_name: technical_terms_present
+create_time: '2025-12-03T07:26:19.825Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:19.825Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  terms_found: '[''data'', ''model'', ''learning'']'
+rationale: 'Found 3 technical terms: data, model, learning'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 6855227f611d5b6e
+trace_id: tr-0cce973227161ee492f96db08463810d
+valid: true

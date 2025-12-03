@@ -1,0 +1,18 @@
+execution_duration_ms: 2030
+request_preview: '{"question": "Explain what is prompt engineering?"}'
+request_time: '2025-12-03T07:08:17.687Z'
+response_preview: '"Okay, let''s delve into the world of prompt engineering.\n\n**What
+  is Prompt Engineering?**\n\nPrompt engineering is the art and science of crafting
+  effective and specific textual prompts that elicit the desired output from large
+  language models (LLMs) like GPT-3, LaMDA, or even simpler models.  It''s about understanding
+  how these models interpret language and tailoring your instructions to guide them
+  toward generating the most relevant, accurate, and helpful responses. In essence,
+  you''re learning to \"speak the language\" of the AI to get the best results.\n\nThink
+  of it like this: you''re teaching a very intelligent, but somewhat naive, student.  You
+  need to give them clear, precise, and well-structured instructions"'
+state: OK
+trace_id: tr-08ad4ba9cb8e4ecc6abfe8e5e32a1e12
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

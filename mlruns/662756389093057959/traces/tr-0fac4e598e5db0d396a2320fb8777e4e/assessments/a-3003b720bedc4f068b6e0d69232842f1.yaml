@@ -1,0 +1,17 @@
+assessment_id: a-3003b720bedc4f068b6e0d69232842f1
+assessment_name: technical_terms_present
+create_time: '2025-12-03T07:26:16.923Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:16.923Z'
+metadata:
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  terms_found: '[''data'', ''model'', ''learning'', ''neural'', ''training'', ''prediction'',
+    ''classification'', ''regression'']'
+rationale: 'Found 8 technical terms: data, model, learning, neural, training'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 3de6e77a081f3941
+trace_id: tr-0fac4e598e5db0d396a2320fb8777e4e
+valid: true

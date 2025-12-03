@@ -1,0 +1,16 @@
+assessment_id: a-9abbd1f352e94417bcfd3287f291ed4c
+assessment_name: key_concepts
+create_time: '2025-12-03T07:05:38.547Z'
+expectation:
+  serialized_value:
+    serialization_format: JSON_FORMAT
+    value: '["versioning", "tracking", "reproducibility", "rollback"]'
+last_update_time: '2025-12-03T07:05:38.547Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: 8d0b60b86a8ce907
+trace_id: tr-81c34a6c10c075bc6e312f0f50fc3684
+valid: true

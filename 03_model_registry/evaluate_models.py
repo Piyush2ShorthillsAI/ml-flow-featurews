@@ -18,11 +18,11 @@ def create_evaluation_dataset():
     """Create a comprehensive evaluation dataset"""
     return pd.DataFrame({
         "inputs": [
-            "What is machine learning?",
-            "Explain neural networks",
-            "What is the difference between AI and ML?",
-            "How does deep learning work?",
-            "What are the applications of NLP?"
+            {"question": "What is machine learning?"},
+            {"question": "Explain neural networks"},
+            {"question": "What is the difference between AI and ML?"},
+            {"question": "How does deep learning work?"},
+            {"question": "What are the applications of NLP?"}
         ],
         "ground_truth": [
             "Machine learning is a subset of AI that enables systems to learn from data.",
@@ -153,8 +153,9 @@ def evaluate_model_version(model_uri: str, eval_data: pd.DataFrame, model_name: 
         model = mlflow.pyfunc.load_model(model_uri)
         
         # Create prediction function
-        def predict_fn(inputs: str) -> str:
-            return model.predict({"question": inputs})
+        # Parameter name must match the key in inputs dict: "question"
+        def predict_fn(question: str) -> str:
+            return model.predict({"question": question})
         
         # Create LLM judges for additional evaluation
         relevance_judge = make_judge(

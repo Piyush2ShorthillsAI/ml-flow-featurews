@@ -7,12 +7,15 @@ sys.path.append('..')
 
 import mlflow
 from config import Config
-from openai import OpenAI
+import google.generativeai as genai
 from utils import create_sample_qa_data, print_evaluation_results
 
 # Import judge creation
 from mlflow.genai.judges import make_judge
 from mlflow.genai.scorers import Guidelines, Correctness
+
+# Enable Gemini tracing
+mlflow.gemini.autolog()
 
 
 def main():
@@ -23,13 +26,13 @@ def main():
     print("="*70 + "\n")
     
     # Validate config
-    if not Config.OPENAI_API_KEY:
-        print("⚠️  ERROR: OPENAI_API_KEY not set")
+    if not Config.GEMINI_API_KEY:
+        print("⚠️  ERROR: GEMINI_API_KEY not set")
         return
     
     # Setup
     Config.setup_mlflow()
-    client = OpenAI(api_key=Config.OPENAI_API_KEY)
+    genai.configure(api_key=Config.GEMINI_API_KEY)
     
     # ============================================================
     # 1. Create Prediction Function
@@ -42,12 +45,28 @@ def main():
             prompt = mlflow.genai.load_prompt("prompts:/qa_prompt_chat@latest")
             formatted = prompt.format(question=question)
             
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=formatted,
-                temperature=0.7
+            # Call Gemini
+            model = genai.GenerativeModel('gemini-2.0-flash-001')
+            
+            # Convert chat messages to Gemini format
+            if isinstance(formatted, list):
+                system_msg = ""
+                user_msg = ""
+                for msg in formatted:
+                    if msg.get("role") == "system":
+                        system_msg = msg.get("content", "")
+                    elif msg.get("role") == "user":
+                        user_msg = msg.get("content", "")
+                
+                full_prompt = f"{system_msg}\n\n{user_msg}" if system_msg else user_msg
+            else:
+                full_prompt = formatted
+            
+            response = model.generate_content(
+                full_prompt,
+                generation_config=genai.types.GenerationConfig(temperature=0.7)
             )
-            return response.choices[0].message.content
+            return response.text
         except Exception as e:
             return f"Error: {e}"
     
@@ -69,7 +88,7 @@ def main():
             "- Clarity of explanation\n\n"
             "Rate as 'excellent', 'good', 'fair', or 'poor'."
         ),
-        model="openai:/gpt-4o-mini",
+        model="gemini:/gemini-2.0-flash-001",
     )
     print("✅ Created quality judge")
     
@@ -84,7 +103,7 @@ def main():
             "- Avoids misconceptions\n\n"
             "Rate as 'accurate', 'mostly_accurate', 'partially_accurate', or 'inaccurate'."
         ),
-        model="openai:/gpt-4o-mini",
+        model="gemini:/gemini-2.0-flash-001",
     )
     print("✅ Created technical accuracy judge")
     
@@ -99,7 +118,7 @@ def main():
             "- Includes relevant examples if appropriate\n\n"
             "Rate as 'very_helpful', 'helpful', 'somewhat_helpful', or 'not_helpful'."
         ),
-        model="openai:/gpt-4o-mini",
+        model="gemini:/gemini-2.0-flash-001",
     )
     print("✅ Created helpfulness judge")
     
@@ -111,7 +130,7 @@ def main():
             "Check if the output covers the same key concepts even if worded differently.\n\n"
             "Rate as 'matches', 'mostly_matches', 'partially_matches', or 'no_match'."
         ),
-        model="openai:/gpt-4o-mini",
+        model="gemini:/gemini-2.0-flash-001",
     )
     print("✅ Created content match judge")
     
@@ -149,7 +168,7 @@ def main():
     
     with mlflow.start_run(run_name="prompt_eval_with_judges"):
         mlflow.log_param("prompt", "qa_prompt_chat@latest")
-        mlflow.log_param("judge_model", "gpt-4o-mini")
+        mlflow.log_param("judge_model", "gemini-2.0-flash-001")
         mlflow.log_param("num_judges", len(scorers))
         mlflow.set_tag("evaluation_type", "llm_judge")
         

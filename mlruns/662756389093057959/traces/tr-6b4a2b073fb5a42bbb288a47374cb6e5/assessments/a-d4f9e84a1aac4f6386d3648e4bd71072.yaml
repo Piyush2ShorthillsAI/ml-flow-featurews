@@ -1,0 +1,22 @@
+assessment_id: a-d4f9e84a1aac4f6386d3648e4bd71072
+assessment_name: technical_accuracy
+create_time: '2025-12-03T07:19:43.530Z'
+feedback:
+  error:
+    error_code: SCORER_ERROR
+    error_message: 'technical_accuracy() missing 1 required positional argument: ''ground_truth'''
+    stack_trace: "Traceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/evaluation/harness.py\",
+      line 210, in run_scorer\n    value = scorer_func(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 391, in run\n    result = self(**filtered)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 1022, in __call__\n    return func(*args, **kwargs)\nTypeError: technical_accuracy()
+      missing 1 required positional argument: 'ground_truth'\n"
+  value: null
+last_update_time: '2025-12-03T07:19:43.530Z'
+metadata:
+  mlflow.assessment.sourceRunId: 8ab08ec80c0f4765bc600fd8c098c9b9
+source:
+  source_id: technical_accuracy
+  source_type: CODE
+span_id: 2c431f3cbaed391d
+trace_id: tr-6b4a2b073fb5a42bbb288a47374cb6e5
+valid: true

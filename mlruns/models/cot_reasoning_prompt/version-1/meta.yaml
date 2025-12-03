@@ -1,0 +1,18 @@
+aliases: []
+creation_timestamp: 1764743488720
+current_stage: None
+deployment_job_state: null
+description: Chain-of-thought reasoning prompt
+last_updated_timestamp: 1764743488720
+metrics: null
+model_id: ''
+name: cot_reasoning_prompt
+params: null
+run_id: ''
+run_link: ''
+source: dummy-source
+status: READY
+status_message: null
+storage_location: dummy-source
+user_id: null
+version: 1

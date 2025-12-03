@@ -1,0 +1,24 @@
+assessment_id: a-73663ba092f245e8a9d2e137bdbbb626
+assessment_name: correctness
+create_time: '2025-12-03T07:38:11.242Z'
+feedback:
+  error:
+    error_code: SCORER_ERROR
+    error_message: Correctness scorer requires either `expected_response` or `expected_facts`
+      in the `expectations` dictionary.
+    stack_trace: "Traceback (most recent call last):\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/evaluation/harness.py\",
+      line 210, in run_scorer\n    value = scorer_func(\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/base.py\",
+      line 391, in run\n    result = self(**filtered)\n  File \"/home/shtlp_0170/.local/lib/python3.10/site-packages/mlflow/genai/scorers/builtin_scorers.py\",
+      line 1333, in __call__\n    raise MlflowException(\nmlflow.exceptions.MlflowException:
+      Correctness scorer requires either `expected_response` or `expected_facts` in
+      the `expectations` dictionary.\n"
+  value: null
+last_update_time: '2025-12-03T07:38:11.242Z'
+metadata:
+  mlflow.assessment.sourceRunId: d28f6d8705fd417eaa228af52057a95d
+source:
+  source_id: correctness
+  source_type: CODE
+span_id: f2a8472195f70fc4
+trace_id: tr-ac2cf0567357e78733fa450938fa20c1
+valid: true

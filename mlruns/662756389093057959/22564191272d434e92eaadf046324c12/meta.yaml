@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/662756389093057959/22564191272d434e92eaadf046324c12/artifacts
+end_time: 1764746819120
+entry_point_name: ''
+experiment_id: '662756389093057959'
+lifecycle_stage: active
+run_id: 22564191272d434e92eaadf046324c12
+run_name: llm_judges
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764746802891
+status: 3
+tags: []
+user_id: messagegeneration

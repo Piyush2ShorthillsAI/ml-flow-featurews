@@ -1,0 +1,7 @@
+aliases: {}
+creation_timestamp: 1764743488688
+deployment_job_id: null
+deployment_job_state: null
+description: Sentiment classification prompt
+last_updated_timestamp: 1764743488698
+name: sentiment_classifier

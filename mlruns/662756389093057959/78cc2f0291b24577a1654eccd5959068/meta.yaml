@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/662756389093057959/78cc2f0291b24577a1654eccd5959068/artifacts
+end_time: 1764745700693
+entry_point_name: ''
+experiment_id: '662756389093057959'
+lifecycle_stage: active
+run_id: 78cc2f0291b24577a1654eccd5959068
+run_name: eval_Chat_V2_(Latest)
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764745695109
+status: 3
+tags: []
+user_id: messagegeneration

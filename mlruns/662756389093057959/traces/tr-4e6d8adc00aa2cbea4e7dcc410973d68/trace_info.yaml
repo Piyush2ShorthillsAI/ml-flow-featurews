@@ -1,0 +1,25 @@
+execution_duration_ms: 3239
+request_preview: '{"model": "gemini-2.0-flash-001", "contents": "\n    You are an
+  expert in MLflow and machine learning operations.\n    \n    Context: A data science
+  team wants to track their GenAI experiments.\n    \n    Question: What are the top
+  3 features of MLflow they should use first?\n    \n    Provide a concise, numbered
+  list with brief explanations.\n    "}'
+request_time: '2025-12-03T07:28:24.556Z'
+response_preview: '{"sdk_http_response": {"headers": {"content-type": "application/json;
+  charset=UTF-8", "vary": "Origin, X-Origin, Referer", "content-encoding": "gzip",
+  "date": "Wed, 03 Dec 2025 07:28:27 GMT", "server": "scaffolding on HTTPServer2",
+  "x-xss-protection": "0", "x-frame-options": "SAMEORIGIN", "x-content-type-options":
+  "nosniff", "server-timing": "gfet4t7; dur=2994", "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\";
+  ma=2592000", "transfer-encoding": "chunked"}, "body": null}, "candidates": [{"content":
+  {"parts": [{"video_metadata": null, "thought": null, "inline_data": null, "file_data":
+  null, "thought_signature": null, "function_call": null, "code_execution_result":
+  null, "executable_code": null, "function_response": null, "text": "Here are the
+  top 3 MLflow features a data science team should leverage first when tracking GenAI
+  experiments:\n\n1.  **MLflow Tracking:** This is the core of MLflow. Use it to log
+  parameters (e.g., model size, learning rate), metrics (e.g., perplexity, F1 s...'
+state: OK
+trace_id: tr-4e6d8adc00aa2cbea4e7dcc410973d68
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

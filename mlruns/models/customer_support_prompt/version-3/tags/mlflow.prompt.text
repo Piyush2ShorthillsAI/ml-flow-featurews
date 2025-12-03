@@ -1,0 +1,1 @@
+[{"role": "system", "content": "You are a customer support agent. Answer customer questions."}, {"role": "user", "content": "{{customer_question}}"}]

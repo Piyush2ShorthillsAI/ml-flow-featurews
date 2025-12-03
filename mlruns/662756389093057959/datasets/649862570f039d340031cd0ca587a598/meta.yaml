@@ -1,0 +1,9 @@
+digest: a3cb901e
+name: dataset
+profile: '{"num_rows": 5, "num_elements": 10}'
+schema: '{"mlflow_colspec": [{"type": "object", "properties": {"question": {"type":
+  "string", "required": true}}, "name": "inputs", "required": true}, {"type": "string",
+  "name": "ground_truth", "required": true}]}'
+source: '{"tags": {"mlflow.user": "messagegeneration", "mlflow.source.name": "evaluate_models.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "ab25874e9b6569774d5487d6298c638140e04f1f"}}'
+source_type: code

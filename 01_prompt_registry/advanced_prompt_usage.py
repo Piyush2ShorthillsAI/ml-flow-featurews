@@ -19,7 +19,11 @@ import mlflow
 import google.generativeai as genai
 from config import Config
 
+# Enable Gemini tracing
+mlflow.gemini.autolog()
 
+
+@mlflow.trace
 def fetch_and_use_prompt_with_gemini():
     """
     Complete workflow: Fetch prompt from MLflow UI and use with Gemini
@@ -31,6 +35,12 @@ def fetch_and_use_prompt_with_gemini():
     
     # Setup
     Config.setup_mlflow()
+    
+    # Set experiment explicitly
+    experiment_name = Config.MLFLOW_EXPERIMENT_NAME
+    mlflow.set_experiment(experiment_name)
+    print(f"📊 Using experiment: {experiment_name}")
+    print(f"📊 Tracking URI: {Config.MLFLOW_TRACKING_URI}\n")
     
     if not Config.GEMINI_API_KEY:
         print("❌ GEMINI_API_KEY not found in .env file")
@@ -142,9 +152,19 @@ Output:
             print(f"❌ Generation failed: {e}")
             mlflow.log_param("error", str(e))
     
-    print("\n✅ Workflow complete!")
+    # Print where to view results
+    print("\n" + "="*80)
+    print("✅ Workflow complete!")
+    print("="*80)
+    print(f"\n📊 View Results in MLflow UI: {Config.MLFLOW_TRACKING_URI}")
+    print(f"\n🎯 Where to look:")
+    print(f"   1. EXPERIMENTS Tab → '{experiment_name}' → Latest Run")
+    print(f"   2. TRACES Tab → Search for 'fetch_and_use_prompt_with_gemini'")
+    print(f"   3. Check Parameters, Metrics, and Artifacts in the run")
+    print("="*80 + "\n")
 
 
+@mlflow.trace
 def extract_template_robust(prompt_obj):
     """
     Robust template extraction with multiple fallback methods
@@ -190,6 +210,7 @@ def extract_template_robust(prompt_obj):
     raise ValueError("Could not extract template from prompt object")
 
 
+@mlflow.trace
 def compare_prompt_versions():
     """
     Fetch and compare multiple versions of the same prompt
@@ -199,6 +220,11 @@ def compare_prompt_versions():
     print("="*80 + "\n")
     
     Config.setup_mlflow()
+    
+    # Set experiment explicitly
+    experiment_name = Config.MLFLOW_EXPERIMENT_NAME
+    mlflow.set_experiment(experiment_name)
+    print(f"📊 Using experiment: {experiment_name}\n")
     
     prompt_name = "email_generation_prompt"
     
@@ -222,6 +248,9 @@ def compare_prompt_versions():
             print(f"   ⚠️ Not available: {e}")
     
     print("\n" + "="*80)
+    print(f"📊 View in MLflow UI: {Config.MLFLOW_TRACKING_URI}")
+    print(f"🎯 Check TRACES tab for 'compare_prompt_versions' trace")
+    print("="*80)
 
 
 if __name__ == "__main__":

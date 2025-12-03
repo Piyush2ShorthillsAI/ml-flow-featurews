@@ -1,0 +1,18 @@
+assessment_id: a-cd3045f049874611965c24d9f41f66fd
+assessment_name: key_concepts_coverage
+create_time: '2025-12-03T07:26:19.843Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:26:19.843Z'
+metadata:
+  found_concepts: '[''open-source'', ''ML lifecycle'', ''tracking'']'
+  missing_concepts: '[]'
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  total_concepts: '3'
+rationale: 'Coverage: 3/3 concepts. Missing: []'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 6855227f611d5b6e
+trace_id: tr-0cce973227161ee492f96db08463810d
+valid: true

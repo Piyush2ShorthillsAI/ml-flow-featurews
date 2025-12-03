@@ -1,0 +1,15 @@
+assessment_id: a-ece6371bb6754a358f75dca3bcd9f34b
+assessment_name: contains_key_concepts
+create_time: '2025-12-03T07:05:38.456Z'
+feedback:
+  value: 1.0
+last_update_time: '2025-12-03T07:05:38.456Z'
+metadata:
+  mlflow.assessment.sourceRunId: 2720e99e8ab4414794fc6112ec072652
+rationale: 'Found 4/4 key concepts: [''AI'', ''data'', ''learning'', ''algorithms'']'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 34948dfa1f20ca05
+trace_id: tr-a5e9fb9bdae0d9fd6d9836def7e99a36
+valid: true

@@ -1,0 +1,21 @@
+execution_duration_ms: 9281
+request_preview: '{"question": "How does deep learning work?"}'
+request_time: '2025-12-03T07:19:34.082Z'
+response_preview: '"Deep learning, at its core, is a subset of machine learning that
+  uses artificial neural networks with multiple layers (hence \"deep\") to analyze
+  data and make predictions. Think of it as a more sophisticated version of how our
+  own brains learn and process information. Here''s a breakdown of how it works:\n\n**1.
+  Artificial Neural Networks (ANNs): The Foundation**\n\n*   **Inspired by the Human
+  Brain:** ANNs are designed to mimic the structure and function of biological neurons
+  in the brain.\n*   **Nodes (Neurons):** The basic building blocks are nodes (also
+  called neurons). Each node receives input, processes it, and produces an output.\n*   **Connections
+  (Edges):**  Nodes are connected to each other via connections (edges). Each connection
+  has a weight associated with it. This weight determines the strength of the connection
+  – how much influence the output of one node has on the input of the next.\n*   **Layers:**
+  Nodes are organized into layers:\n    *   **Input Layer:**  Receive...'
+state: OK
+trace_id: tr-6b4a2b073fb5a42bbb288a47374cb6e5
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

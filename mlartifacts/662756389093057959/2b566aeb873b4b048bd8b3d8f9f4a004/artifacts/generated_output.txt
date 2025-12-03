@@ -1,0 +1,9 @@
+Okay, I understand. I'm ready to receive a documentation request. I will do my best to adhere to all the guidelines and principles outlined above. Please provide the following inputs:
+
+- Topic: {topic}
+- Audience Level: {audience_level}
+- Documentation Type: {doc_type}
+- Context: {context}
+- Length: {desired_length}
+
+Once I have this information, I will begin crafting the documentation. Let's get started!

@@ -1,0 +1,14 @@
+assessment_id: a-204aca1e05324666964cfe7238a46a59
+assessment_name: answer
+create_time: '2025-12-03T07:38:11.645Z'
+expectation:
+  value: MLflow is an ML platform
+last_update_time: '2025-12-03T07:38:11.645Z'
+metadata:
+  mlflow.assessment.sourceRunId: d28f6d8705fd417eaa228af52057a95d
+source:
+  source_id: messagegeneration
+  source_type: HUMAN
+span_id: 39b2d002e1fe608c
+trace_id: tr-e4969f0c2d3353ee7c1f4933cbdb6962
+valid: true

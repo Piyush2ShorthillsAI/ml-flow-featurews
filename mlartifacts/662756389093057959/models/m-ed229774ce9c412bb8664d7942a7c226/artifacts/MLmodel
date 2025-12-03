@@ -1,0 +1,40 @@
+artifact_path: mlflow-artifacts:/662756389093057959/models/m-ed229774ce9c412bb8664d7942a7c226/artifacts
+flavors:
+  python_function:
+    cloudpickle_version: 3.1.1
+    code: null
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pyfunc.model
+    python_model: python_model.pkl
+    python_version: 3.10.12
+    streamable: false
+is_signature_from_type_hint: false
+metadata:
+  context_window: 1M tokens
+  description: Gemini 2.0 Flash - Precise variant for consistent, factual responses
+  max_tokens: '512'
+  model_name: gemini-2.0-flash-001
+  provider: google-gemini
+  temperature: '0.2'
+  top_k: '20'
+  top_p: '0.8'
+  use_case: Factual queries, code generation, technical documentation
+  variant: precise
+mlflow_version: 3.6.0
+model_id: m-ed229774ce9c412bb8664d7942a7c226
+model_size_bytes: 2917
+model_uuid: m-ed229774ce9c412bb8664d7942a7c226
+prompts: null
+run_id: 52ca4dbb00f54639b7190aa7af1326e9
+saved_input_example_info:
+  artifact_path: input_example.json
+  serving_input_path: serving_input_example.json
+  type: json_object
+signature:
+  inputs: '[{"type": "string", "name": "question", "required": true}]'
+  outputs: '[{"type": "string", "name": "response", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2025-12-03 07:12:27.565563'

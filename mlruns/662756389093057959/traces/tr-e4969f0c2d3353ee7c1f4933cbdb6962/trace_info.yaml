@@ -1,0 +1,12 @@
+execution_duration_ms: 1370
+request_preview: '{"question": "What is MLflow?"}'
+request_time: '2025-12-03T07:38:10.238Z'
+response_preview: '"MLflow is an open-source platform for managing the end-to-end
+  machine learning lifecycle, including experiment tracking, model packaging, deployment,
+  and a model registry.\n"'
+state: OK
+trace_id: tr-e4969f0c2d3353ee7c1f4933cbdb6962
+trace_location:
+  mlflow_experiment:
+    experiment_id: '662756389093057959'
+  type: MLFLOW_EXPERIMENT

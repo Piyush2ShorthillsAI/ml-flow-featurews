@@ -1,0 +1,17 @@
+assessment_id: a-82cea89e5fe34957b3e4d0a1ab989fdd
+assessment_name: readability_score
+create_time: '2025-12-03T07:26:19.822Z'
+feedback:
+  value: 0.9117142857142857
+last_update_time: '2025-12-03T07:26:19.822Z'
+metadata:
+  avg_sentence_length: '10.585714285714285'
+  mlflow.assessment.sourceRunId: 10e7298c889e48c39b12dfdc840f8654
+  sentence_count: '70'
+rationale: 'Average sentence length: 10.6 words'
+source:
+  source_id: default
+  source_type: CODE
+span_id: 6855227f611d5b6e
+trace_id: tr-0cce973227161ee492f96db08463810d
+valid: true

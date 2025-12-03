@@ -1,0 +1,18 @@
+assessment_id: a-a1f6d8a622e745f4bed119bd64fb9f8d
+assessment_name: helpfulness
+create_time: '2025-12-03T07:11:20.506Z'
+feedback:
+  value: very_helpful
+last_update_time: '2025-12-03T07:11:20.506Z'
+metadata:
+  mlflow.assessment.judgeCost: '0.0002994'
+  mlflow.assessment.sourceRunId: e779d43d2f1f4c43885513408c660e7b
+rationale: The response gives a very detailed explanation of MLflow. It includes what
+  it is, what the key components are, the benefits of using MLflow, when to use it,
+  and alternatives.
+source:
+  source_id: gemini:/gemini-2.0-flash-001
+  source_type: LLM_JUDGE
+span_id: d06a695cb10bf841
+trace_id: tr-ec876447c75f17f404da6a4ed03c6f3f
+valid: true
